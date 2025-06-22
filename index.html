@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMI Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <main class="container">
+        <h1>Loan EMI Calculator</h1>
+
+        <div class="calculator">
+            <div class="calculator-inputs">
+                <!-- Loan Amount -->
+                <div class="input-group">
+                    <label for="loanAmount"><img src="assets/loan-amount.svg" alt="loan-amount" class="icon-bg"> Loan Amount</label>
+                    <div class="input-field-wrapper">
+                        <span class="prefix"> <img src="assets/rupee.svg"> </span>
+                        <input type="number" id="loanAmount" value="1000000">
+                    </div>
+                </div>
+
+                <!-- Rate of Interest -->
+                <div class="input-group">
+                    <label for="interestRate"><img src="assets/rate-of-interest.svg" alt="rate-of-interest" class="icon-bg"> Rate Of Interest</label>
+                    <div class="input-field-wrapper">
+                        <input type="number" id="interestRate" value="8.1" step="0.1">
+                        <span class="suffix"> <img src="assets/percentage.svg"> </span>
+                    </div>
+                </div>
+
+                <!-- Tenure -->
+                <div class="input-group">
+                    <label for="tenure"><img src="assets/tenure.svg" alt="rate-of-interest" class="icon-bg"> Tenure</label>
+                    <div class="input-field-wrapper">
+                        <input type="number" id="tenure" value="5">
+                        <span class="suffix h1" style="font-size: 1.5rem;" >yrs</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calculator-results">
+                <div class="result-item">
+                    <span>Monthly EMI</span>
+                    <span class="result-value" id="monthlyEmi">0</span>
+                </div>
+                <div class="result-item">
+                    <span>Total Amount Repaid</span>
+                    <span class="result-value" id="totalAmount">0</span>
+                </div>
+                <div class="result-item">
+                    <span>Total Interest Paid</span>
+                    <span class="result-value" id="totalInterest">0</span>
+                </div>
+                 <div class="result-item">
+                    <span>Inflation adjusted loss</span>
+                    <span class="result-value" id="inflationLoss">5,00,999</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
