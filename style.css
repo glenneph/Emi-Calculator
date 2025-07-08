@@ -1,15 +1,17 @@
-@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@100,200,300,400,500,600,700,800,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
 
 :root {
     --bg-dark: #1D1D20;
     --primary-card-bg: #404042;
-    --secondary-card-bg: #717171;
-    --border-color: #616161;
+    --secondary-card-bg: #575757;
+    --result-card: #2B2B2B; 
+    --border-color: #404042;
+    --border-color2: #727272;
     --text: #ffffff;
-    --results-text: #333333;
+    --black: #000000;
+    --text-muted: #BEBEBE;
     --green: #AED0B6;
-    --icon-color: #333333;
 }
 
 * {
@@ -27,28 +29,36 @@ body {
     min-height: 100vh;
 }
 
+header {
+    border-bottom: 1px solid var(--green);
+    font-family: 'Cabinet Grotesk', sans-serif;
+    padding: 20px 80px;
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
 .container {
-    max-width: 900px;
-    margin: 80px 128px;
-    padding: 0 20px;
+    max-width: 100%;
+    padding: 64px 80px;
     width: 100%;
 }
 
 h1 {
 	font-family: 'Cabinet Grotesk', sans-serif;
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 40px;
+    font-size: 2.2rem;
+    font-weight: 500;
+    margin-bottom: 30px;
     color: var(--text);
 }
 
 .icon-bg {
-    background-color: var(--green); 
+    background-color: var(--green);
     width: 32px;
     height: 32px;
-    border-radius: 50%; 
-	padding: 8px 8px;
-    box-sizing: border-box; 
+    border-radius: 50%;
+	padding: 8px;
+    box-sizing: border-box;
 }
 
 .calculator-inputs {
@@ -58,10 +68,11 @@ h1 {
 }
 
 .input-group {
+    width: 306px;
+    flex-shrink: 0; 
     background-color: var(--primary-card-bg);
     border-radius: 12px;
     padding: 20px;
-    flex: 1;
     display: flex;
     flex-direction: column;
 }
@@ -75,136 +86,322 @@ h1 {
     font-size: 1.0rem;
 }
 
-.input-group label i {
-    background-color: var(--green);
-    color: var(--icon-color);
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    font-size: 0.9rem;
-}
-
-/* This rule now only handles layout (space between items) */
 .input-field-wrapper {
     display: flex;
-    gap: 8px; /* Requirement 1: Adds space between the icon and text field */
+    gap: 8px;
 }
 
-/* This rule styles the text field itself */
 .input-field-wrapper input {
-    width: 100%;
-    background-color: var(--primary-card-bg); /* Has its own background now */
-    border-width: 1px;
-	border-style: solid;
-	border-color: var(--green); /* Requirement 2: Green border */
-    border-radius: 8px; /* Rounded corners */
-    color: var(--text-light);
+    flex: 1; 
+    background-color: var(--primary-card-bg);
+    border: 1px solid var(--green);
+    border-radius: 8px;
+    color: var(--text);
     padding: 10px;
     outline: none;
-    font-size: 1.4rem;      /* Requirement 3: Font size */
-    font-weight: 600;     /* Requirement 3: Font weight */
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 1.5rem;
 }
 
-/* This rule styles the currency/unit symbols */
+/* For browsers that support number input spinners */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+
+.input-field-wrapper input::placeholder {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.input-field-wrapper input:not(:placeholder-shown) {
+    color: var(--text);
+    font-weight: 600; 
+}
+
 .input-field-wrapper .prefix,
 .input-field-wrapper .suffix {
-    padding: 10px 15px;
-    color: var(--text-medium);
-	background-color: var(--secondary-card-bg);
-	border-width: 1px;
-	border-style: solid;
-	border-color: var(--green);
+    height: 58px;
+    padding: 16px 8px;
+    color: var(--text);
+	background-color: #58585B;
+	border: 1px solid var(--green);
     display: flex;
     align-items: center;
-    border-radius: 8px; /* Gives the icon its own rounded container */
-    font-size: 24px; /* Match the font size for visual balance */
+    border-radius: 8px;
+    font-size: 24px;
     font-weight: 700;
 }
 
-.input-field-wrapper input#loanAmount {
+/* ===== NEW V2 STYLES ===== */
+.results-box {
+    background-color: var(--result-card);
+    border: 1px solid var(--green);
+    border-radius: 12px;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--green);
+}
+
+.results-header h2 {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.settings-btn {
+    background: var(--primary-card-bg);
+    border: 1px solid var(--green);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 12px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: start;
+    gap: 24px 108px;
+    padding: 24px;
+}
+
+.summary-item {
+    display: flex;
+    width: 320px;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+}
+
+.summary-item .label {
+    font-size: 1rem;
+    width: 180px;
+    color: var(--text);
+}
+
+.summary-item .value {
+    font-size: 1.5rem;
+    width: 140px;
+    text-align: end;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.amortization-table-container {
+    border-radius: 8px;
+    margin: 0px 24px 24px 24px;
+    overflow: hidden;
+}
+
+/* The main table that holds the year rows */
+.amortization-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Style for the simple, collapsed year row */
+.year-row td {
+    background-color: var(--primary-card-bg);
+    border-bottom: 1px solid var(--green);
+    padding: 16px 20px;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.year-row.open td {
+    border-bottom: none;
+}
+
+.year-row:last-of-type td {
+    border-bottom: none;
+}
+
+.toggle-icon {
+    /* This makes the rotation animation smooth, taking 0.3 seconds */
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Rule 2: This applies the rotation when the parent row is open */
+.year-row.open .toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* This is the TR that will hold our injected details table */
+.details-container-row td {
+    padding: 0; /* Remove padding to allow the inner table to be flush */
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* This is the dynamically injected table with monthly details */
+.details-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--primary-card-bg);
+}
+
+.details-table td {
+    padding: 16px 24px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--border-color);
+    text-align: right;
+    border-right: 1px solid var(--border-color2);
+    border-bottom: 1px solid var(--border-color2); 
+}
+
+.details-table th {
+    /* 1. Sets the background color. Let's use your primary card color. */
+    background-color: var(--green);
+    /* 2. Sets the text color to white. */
+    color: var(--black); 
+    font-size: 1rem;
+    /* 3. Sets the boldness of the text (e.g., 600 for semi-bold) */
+    font-weight: 500;
+    /* 4. Controls the spacing inside the header cells */
+    padding: 8px 24px;
+    /* 5. Aligns the text ('left', 'center', or 'right') */
+    text-align: right;
+    border-right: 1px solid var(--border-color2);
+    border-bottom: 1px solid var(--border-color2); 
+}
+
+.details-table th:last-child,
+.details-table td:last-child {
+    border-right: none;
+}
+
+.details-table tr > th:first-child,
+.details-table tr > td:first-child {
     text-align: left;
 }
-.input-field-wrapper input#interestRate,
-.input-field-wrapper input#tenure {
-    text-align: right;
+
+/* The summary row at the bottom of the details table */
+.summary-row {
+    background-color: var(--secondary-card-bg);
+    font-weight: 700;
+    border-bottom: 1px solid var(--green);
 }
 
-/* --- Styles for the Results Box --- */
-
-.calculator-results {
-    /* Requirement: Set the overall width of the box */
-    width: 664px; 
-    background-color: var(--green);
-    border-radius: 12px;
-    padding: 30px;
-    color: var(--results-text);
-
-	position: relative;
-	background-image: url('assets/bank-tax.svg');
-	background-repeat: no-repeat;
-	background-position: right bottom;
-	background-position: right -35px bottom -22px;
+.summary-row td {
+    border-bottom: none; /* No bottom border on the summary */
 }
 
-.result-item {
+/* A simple utility class to hide rows */
+.hidden {
+    display: none;
+}
+
+/* Style for the placeholder row when there's no data */
+.placeholder-row td {
+    color: var(--text-muted);
+    text-align: center;
+    padding: 40px;
+    background-color: var(--primary-card-bg);
+}
+
+.results-header {
+    position: relative; /* CRITICAL for positioning the popover */
     display: flex;
-    align-items: center; /* Vertically aligns them */
-    margin-bottom: 20px;
-    font-size: 1rem;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--green);
+}
+
+/* Rule 2: Positions the popover card itself */
+.modal-card {
+    position: absolute; /* Takes it out of the normal flow */
+    top: 80%; /* Positions it right below the header */
+    right: 20px;  /* Aligns it to the right side */
+    margin-top: 4px; /* Adds a small space below the header */
+    
+    /* The rest of the styling is similar */
+    background-color: var(--result-card);
+    border-radius: 12px;
+    border: 1px solid var(--green);
+    width: 100%;
+    max-width: 280px;
+    z-index: 1000;
+
+    /* For the hide/show animation */
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Rule 3: A simple class to hide the popover */
+.modal-card.hidden {
+    opacity: 0;
+    transform: translateY(-10px); /* Moves it up slightly when hidden */
+    pointer-events: none;
+}
+
+.modal-card h3 {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 20px 16px 16px 16px;
+    text-align: left;
+    color: var(--text);
+}
+
+.modal-card .divider {
+    height: 1px;
+    background-color: var(--green);
+}
+
+.modal-card label {
+    font-size: 0.875rem;
+    margin: 16px 16px 8px 16px;
+    display: block;
+    color: var(--text);
     font-weight: 500;
 }
 
-.result-item:last-child {
-    margin-bottom: 0;
-}
-
-/* Target the text label specifically */
-.result-item > span:first-child {
-    /* Requirement: Set the width of the text label */
-    width: 200px;
-    text-align: left;
-	margin-right: 24px;
-}
-
-.result-value {
-    /* Requirement: Set the width of the value box */
-    width: 210px;
-
+/* The wrapper for the date input field */
+.date-input-wrapper {
+    display: flex;
+    align-items: center;
     background-color: var(--primary-card-bg);
-    color: var(--text);
-    padding: 10px 20px;
+    border: 1px solid var(--green);
     border-radius: 8px;
-    font-weight: 600;
-    text-align: left;
-    font-size: 1.1rem;
-    
-    /* Ensures padding is included in the 210px width */
-    box-sizing: border-box; 
+    padding: 12px 16px;
+    margin: 0px 16px 20px 16px;
 }
 
-/* Responsive adjustments */
+.date-input-wrapper input {
+    flex-grow: 1; /* Makes the input take up all available space */
+    min-width: 0;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: 'Cabinet Grotesk', sans-serif;
+}
+
+.date-input-wrapper .material-symbols-outlined {
+    color: var(--text-muted);
+}
+
+/* Responsive adjustments can be refined later */
 @media (max-width: 768px) {
-    .calculator-inputs {
-        flex-direction: column;
-    }
-    h1 {
-        font-size: 2rem;
-        text-align: center;
-    }
-    .result-item {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
-        padding-bottom: 15px;
-        border-bottom: 1px solid rgba(0,0,0,0.1);
-    }
-    .result-item:last-child {
-        border-bottom: none;
-    }
-    .result-value {
-        width: 100%;
-        text-align: right;
-    }
+    .container { margin: 20px auto; }
+    .calculator-inputs { flex-direction: column; }
+    .summary-grid { grid-template-columns: 1fr; }
 }

@@ -3,23 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMI Calculator</title>
+    <title>EMI Calculator - V2</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Using a different icon library for more options if needed -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
 </head>
 <body>
+    <header>
+        EMI Calculator
+    </header>
     <main class="container">
-        <h1>Loan EMI Calculator</h1>
-
         <div class="calculator">
+            <!-- ===== INPUT SECTION ===== -->
             <div class="calculator-inputs">
                 <!-- Loan Amount -->
                 <div class="input-group">
                     <label for="loanAmount"><img src="assets/loan-amount.svg" alt="loan-amount" class="icon-bg"> Loan Amount</label>
                     <div class="input-field-wrapper">
                         <span class="prefix"> <img src="assets/rupee.svg"> </span>
-                        <input type="number" id="loanAmount" value="1000000">
+                        <input type="number" id="loanAmount" placeholder="Enter Amount" min="1000" max="100000000">
                     </div>
                 </div>
 
@@ -27,42 +31,74 @@
                 <div class="input-group">
                     <label for="interestRate"><img src="assets/rate-of-interest.svg" alt="rate-of-interest" class="icon-bg"> Rate Of Interest</label>
                     <div class="input-field-wrapper">
-                        <input type="number" id="interestRate" value="8.1" step="0.1">
+                        <input type="number" id="interestRate" placeholder="Enter Interest" step="0.1" min="1" max="100">
                         <span class="suffix"> <img src="assets/percentage.svg"> </span>
                     </div>
                 </div>
 
                 <!-- Tenure -->
                 <div class="input-group">
-                    <label for="tenure"><img src="assets/tenure.svg" alt="rate-of-interest" class="icon-bg"> Tenure</label>
+                    <label for="tenure"><img src="assets/tenure.svg" alt="tenure" class="icon-bg"> Tenure</label>
                     <div class="input-field-wrapper">
-                        <input type="number" id="tenure" value="5">
+                        <input type="number" id="tenure" placeholder="Enter Tenure" min="1" max="30">
                         <span class="suffix h1" style="font-size: 1.5rem;" >yrs</span>
                     </div>
                 </div>
             </div>
 
-            <div class="calculator-results">
-                <div class="result-item">
-                    <span>Monthly EMI</span>
-                    <span class="result-value" id="monthlyEmi">0</span>
+            <!-- ===== RESULTS SECTION ===== -->
+            <div class="results-box">
+                <div class="results-header">
+                    <h2>Result</h2>
+                    <button class="settings-btn">
+                        <span class="material-symbols-outlined"><img src="assets/configuration.svg" alt="configuration"></span>
+                    </button>
+
+                    <!-- THIS IS THE NEW LOCATION FOR THE MODAL -->
+                    <!-- We've renamed the ID and added the 'hidden' class -->
+                    <div id="config-popover" class="modal-card hidden">
+                        <h3>Configuration</h3>
+                        <div class="divider"></div>
+                        <label for="startDate">EMI Start Date</label>
+                        <div class="date-input-wrapper">
+                            <input type="text" id="startDate" value="24/06/2025">
+                            <span class="material-symbols-outlined">calendar_today</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="result-item">
-                    <span>Total Amount Repaid</span>
-                    <span class="result-value" id="totalAmount">0</span>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <span class="label">Monthly EMI</span>
+                        <span class="value" id="summary-emi">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">Inflation Adjusted Loss</span>
+                        <span class="value" id="summary-inflation-loss">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">Interest Amount</span>
+                        <span class="value" id="summary-interest">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">Total Amount</span>
+                        <span class="value" id="summary-total">-</span>
+                    </div>
                 </div>
-                <div class="result-item">
-                    <span>Total Interest Paid</span>
-                    <span class="result-value" id="totalInterest">0</span>
-                </div>
-                 <div class="result-item">
-                    <span>Inflation adjusted loss</span>
-                    <span class="result-value" id="inflationLoss">5,00,999</span>
+
+                <div class="amortization-table-container">
+                    <table class="amortization-table">
+                        <tbody id="amortization-body">
+                            <!-- JS will generate rows here -->
+                            <tr class="placeholder-row">
+                                <td colspan="6">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </main>
-
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="script.js"></script>
 </body>
 </html>
