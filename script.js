@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const loanAmountInput = document.getElementById('loanAmount');
     const interestRateInput = document.getElementById('interestRate');
     const tenureInput = document.getElementById('tenure');
-    const allInputs = [loanAmountInput, interestRateInput, tenureInput];
+    const moratoriumInput = document.getElementById('moratorium');
+    const allInputs = [loanAmountInput, interestRateInput, tenureInput, moratoriumInput];
 
     const summaryEmiEl = document.getElementById('summary-emi');
     const summaryInterestEl = document.getElementById('summary-interest');
@@ -15,12 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const amortizationContainer = document.querySelector('.amortization-table-container');
 
     const settingsBtn = document.querySelector('.settings-btn');
-    const configPopover = document.getElementById('config-popover'); // Changed from configModalOverlay
-
+    const configPopover = document.getElementById('config-popover'); 
+    
     const startDateInput = document.getElementById('startDate');
+    // NEW: Get reference to the warning message element
+    const dateWarningEl = document.getElementById('date-reference-warning');
 
     // --- STATE & CONSTANTS ---
     let fullScheduleData = [];
+    let todayDateString = ""; // NEW: Variable to store the default date string
     const INFLATION_RATE = 5.85;
 
     // --- HELPER FUNCTIONS ---
@@ -38,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         summaryInterestEl.textContent = "-";
         summaryTotalEl.textContent = "-";
         summaryInflationLossEl.textContent = "-";
-        amortizationBody.innerHTML = `<tr class="placeholder-row"><td colspan="5">-</td></tr>`;
+        amortizationBody.innerHTML = `<tr class="placeholder-row"><td colspan="6">-</td></tr>`;
         amortizationContainer.classList.add('hidden');
     };
 
@@ -47,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const P = parseFloat(loanAmountInput.value);
         const annualInterestRate = parseFloat(interestRateInput.value);
         const tenureInYears = parseFloat(tenureInput.value);
+        const moratoriumInYears = parseFloat(moratoriumInput.value) || 0;
 
         if (isNaN(P) || isNaN(annualInterestRate) || isNaN(tenureInYears) || P <= 0 || annualInterestRate <= 0 || tenureInYears <= 0) {
             resetUI();
@@ -57,35 +62,44 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const r_actual = (annualInterestRate / 12) / 100;
         const n = tenureInYears * 12;
-        const emi = (P * r_actual * Math.pow(1 + r_actual, n)) / (Math.pow(1 + r_actual, n) - 1);
-        
-        updateSummary(P, emi, n, annualInterestRate);
-        // This new block replaces the two lines above
-        const dateParts = startDateInput.value.split('/');
-        if (dateParts.length === 3) {
-            const day = parseInt(dateParts[0], 10);
-            const month = parseInt(dateParts[1], 10) - 1; // JS months are 0-11
-            const year = parseInt(dateParts[2], 10);
-            const startDate = new Date(year, month, day);
+        const m = moratoriumInYears * 12;
 
-            if (!isNaN(startDate)) {
-                fullScheduleData = generateAmortizationData(P, emi, r_actual, n, startDate.getMonth(), startDate.getFullYear());
-                renderInitialTable(fullScheduleData);
-            }
+        let effectivePrincipal = P;
+        if (m > 0) {
+            effectivePrincipal = P * Math.pow(1 + r_actual, m);
         }
+        
+        const emi = (effectivePrincipal * r_actual * Math.pow(1 + r_actual, n)) / (Math.pow(1 + r_actual, n) - 1);
+        
+        updateSummary(P, emi, n, annualInterestRate, moratoriumInYears);
+        
+        // MODIFIED: Calculation is now always based on the REAL current date, not the picker.
+        const calculationStartDate = new Date();
+        fullScheduleData = generateAmortizationData(P, emi, r_actual, n, m, calculationStartDate.getMonth(), calculationStartDate.getFullYear());
         renderInitialTable(fullScheduleData);
     }
     
-    function updateSummary(P, emi, n, annualInterestRate) {
+    function updateSummary(P, emi, n, annualInterestRate, moratoriumInYears) {
         const totalAmountPayable = emi * n;
         const totalInterestPayable = totalAmountPayable - P;
 
         const adjustedInterestRate = Math.max(0, annualInterestRate - INFLATION_RATE);
         let inflationAdjustedLoss = 0;
+
         if (adjustedInterestRate > 0) {
             const r_adjusted = (adjustedInterestRate / 12) / 100;
-            const emi_adjusted = (P * r_adjusted * Math.pow(1 + r_adjusted, n)) / (Math.pow(1 + r_adjusted, n) - 1);
-            inflationAdjustedLoss = (emi_adjusted * n) - P;
+            const m_months = moratoriumInYears * 12;
+
+            let effectivePrincipal_adjusted = P;
+            if (m_months > 0) {
+                effectivePrincipal_adjusted = P * Math.pow(1 + r_adjusted, m_months);
+            }
+
+            const emi_adjusted = (effectivePrincipal_adjusted * r_adjusted * Math.pow(1 + r_adjusted, n)) / (Math.pow(1 + r_adjusted, n) - 1);
+            
+            if(isFinite(emi_adjusted)) {
+                inflationAdjustedLoss = (emi_adjusted * n) - P;
+            }
         }
 
         summaryEmiEl.textContent = formatToIndianCurrency(emi);
@@ -94,22 +108,35 @@ document.addEventListener('DOMContentLoaded', () => {
         summaryInflationLossEl.textContent = formatToIndianCurrency(inflationAdjustedLoss);
     }
     
-    function generateAmortizationData(principal, emi, monthlyRate, totalMonths, startMonthIndex, startYear) {
+    // The rest of your functions like generateAmortizationData, renderInitialTable, etc., remain unchanged.
+    // ... (All other functions from the previous correct version are here and correct)
+
+    function generateAmortizationData(principal, emi, monthlyRate, tenureMonths, moratoriumMonths, startMonthIndex, startYear) {
         let balance = principal;
         const schedule = [];
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        for (let i = 0; i < totalMonths; i++) {
-            const interestPayment = balance * monthlyRate;
-            const principalPayment = emi - interestPayment;
-            balance -= principalPayment;
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const totalDurationInMonths = moratoriumMonths + tenureMonths;
+        for (let i = 0; i < totalDurationInMonths; i++) {
             const currentMonthIndex = (startMonthIndex + i) % 12;
             const currentYear = startYear + Math.floor((startMonthIndex + i) / 12);
-            schedule.push({ year: currentYear, month: monthNames[currentMonthIndex], principal: principalPayment, interest: interestPayment, total: emi, balance: balance > 0 ? balance : 0 });
+            const interestPayment = balance * monthlyRate;
+            if (i < moratoriumMonths) {
+                balance += interestPayment;
+                schedule.push({ year: currentYear, month: monthNames[currentMonthIndex], principal: 0, interest: interestPayment, total: 0, balance: balance });
+            } else {
+                const principalPayment = emi - interestPayment;
+                balance -= principalPayment;
+                schedule.push({ year: currentYear, month: monthNames[currentMonthIndex], principal: principalPayment, interest: interestPayment, total: emi, balance: balance > 0 ? balance : 0 });
+            }
         }
         return schedule;
     }
-
     function renderInitialTable(schedule) {
+        amortizationBody.innerHTML = "";
+        if (!schedule || schedule.length === 0) {
+            amortizationBody.innerHTML = `<tr class="placeholder-row"><td colspan="6">-</td></tr>`;
+            return;
+        }
         const yearlyData = {};
         schedule.forEach(row => { if (!yearlyData[row.year]) { yearlyData[row.year] = true; } });
         let tableHTML = "";
@@ -118,8 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         amortizationBody.innerHTML = tableHTML;
     }
-
-    // --- EVENT LISTENERS ---
     allInputs.forEach(input => {
         input.addEventListener('input', () => {
             const max = parseFloat(input.max);
@@ -127,15 +152,11 @@ document.addEventListener('DOMContentLoaded', () => {
             calculateAndDisplayResults();
         });
     });
-
-    // RESTORED: The reliable "create and destroy" click handler
     amortizationBody.addEventListener('click', function(e) {
         const yearRow = e.target.closest('.year-row');
         if (!yearRow) return;
-
         const year = yearRow.dataset.year;
         const wasOpen = yearRow.classList.contains('open');
-
         const currentlyOpenRow = document.querySelector('.year-row.open');
         if (currentlyOpenRow) {
             currentlyOpenRow.classList.remove('open');
@@ -144,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (existingDetails) {
             existingDetails.remove();
         }
-
         if (!wasOpen) {
             yearRow.classList.add('open');
             const yearMonths = fullScheduleData.filter(row => row.year == year);
@@ -154,7 +174,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 totalPrincipal += row.principal;
                 totalInterest += row.interest;
                 totalPayment += row.total;
-                monthRowsHTML += `<tr><td>${row.month}</td><td>${formatToIndianCurrency(row.principal)}</td><td>${formatToIndianCurrency(row.interest)}</td><td>${formatToIndianCurrency(row.total)}</td><td>${formatToIndianCurrency(row.balance)}</td></tr>`;
+                let principalText = formatToIndianCurrency(row.principal);
+                let totalText = formatToIndianCurrency(row.total);
+                if (row.total === 0) {
+                    principalText = "<i>-</i>";
+                    totalText = "<i>MORATORIUM</i>";
+                }
+                monthRowsHTML += `<tr><td>${row.month}</td><td>${principalText}</td><td>${formatToIndianCurrency(row.interest)}</td><td>${totalText}</td><td>${formatToIndianCurrency(row.balance)}</td></tr>`;
             });
             const detailsTableHTML = `<table class="details-table"><thead><tr><th>Month</th><th>To Principal</th><th>To Interest</th><th>Total Payment</th><th>Balance</th></tr></thead><tbody>${monthRowsHTML}</tbody><tfoot><tr class="summary-row"><td>Summary</td><td>${formatToIndianCurrency(totalPrincipal)}</td><td>${formatToIndianCurrency(totalInterest)}</td><td>${formatToIndianCurrency(totalPayment)}</td><td>${formatToIndianCurrency(yearMonths[yearMonths.length - 1].balance)}</td></tr></tfoot></table>`;
             const detailsContainer = document.createElement('tr');
@@ -163,41 +189,45 @@ document.addEventListener('DOMContentLoaded', () => {
             yearRow.after(detailsContainer);
         }
     });
-
-    // --- ADD THIS ENTIRE NEW BLOCK for MODAL FUNCTIONALITY ---
-
-    // Event Listener to SHOW the modal by removing the 'hidden' class
     settingsBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevents the click from bubbling up to the document
+        e.stopPropagation();
         configPopover.classList.toggle('hidden');
     });
-
-    // Event listener on the whole document to close the popover
     document.addEventListener('click', (e) => {
-        // If the popover is NOT hidden and the click was OUTSIDE both the popover and the button
-        if (!configPopover.classList.contains('hidden') && !configPopover.contains(e.target) && !settingsBtn.contains(e.target)) {
+        const isClickInside = configPopover.contains(e.target) || settingsBtn.contains(e.target);
+        const isClickOnCalendar = e.target.closest('.flatpickr-calendar');
+        if (!configPopover.classList.contains('hidden') && !isClickInside && !isClickOnCalendar) {
             configPopover.classList.add('hidden');
         }
     });
 
-    // --- END OF NEW BLOCK ---
-
     // --- INITIALIZATION ---
-    flatpickr("#startDate", {
-    // Sets the date format to dd/mm/yyyy
-    dateFormat: "d/m/Y",
+    // MODIFIED: Flatpickr logic now controls the warning message visibility
+    flatpickr("#startDateWrapper", {
+        wrap: true,
+        dateFormat: "d-m-Y",
+        defaultDate: "today",
+        
+        // This hook runs once when the calendar is ready
+        onReady: function(selectedDates, dateStr, instance) {
+            // Store the initial "today" date string for comparison
+            todayDateString = dateStr;
+        },
+
+        // This hook runs every time the user picks a new date
+        onChange: function(selectedDates, dateStr, instance) {
+            // Check if the newly selected date is different from the original "today" date
+            if (dateStr === todayDateString) {
+                // If the user selects "today" again, hide the warning
+                dateWarningEl.classList.add('hidden');
+            } else {
+                // If it's different, show the warning message
+                dateWarningEl.classList.remove('hidden');
+            }
+            // We DO NOT call calculateAndDisplayResults() here anymore.
+        }
+    });
     
-    // Prevents selecting any date in the past
-    minDate: "today",
-    
-    // Sets the default date to today when the page loads
-    defaultDate: "today",
-    
-    // This function runs every time the user picks a new date
-    onChange: function(selectedDates, dateStr, instance) {
-        calculateAndDisplayResults();
-    }
-});
     resetUI();
     calculateAndDisplayResults();
 });

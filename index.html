@@ -44,6 +44,14 @@
                         <span class="suffix h1" style="font-size: 1.5rem;" >yrs</span>
                     </div>
                 </div>
+
+                <div class="input-group">
+                        <label for="moratorium"><img src="assets/moratorium.svg" alt="moratorium" class="icon-bg"> Moratorium Period</label>
+                        <div class="input-field-wrapper">
+                            <input type="number" id="moratorium" value="0" step="0.1" min="0" max="3">
+                            <span class="suffix h1" style="font-size: 1.5rem;">yrs</span>
+                        </div>
+                </div>
             </div>
 
             <!-- ===== RESULTS SECTION ===== -->
@@ -60,9 +68,9 @@
                         <h3>Configuration</h3>
                         <div class="divider"></div>
                         <label for="startDate">EMI Start Date</label>
-                        <div class="date-input-wrapper">
-                            <input type="text" id="startDate" value="24/06/2025">
-                            <span class="material-symbols-outlined">calendar_today</span>
+                        <div id="startDateWrapper" class="date-input-wrapper">
+                            <input type="text" id="startDate" placeholder="Select Date" data-input> <!-- data-input tells Flatpickr this is the field -->
+                            <span class="material-symbols-outlined" data-toggle><img src="assets/calendar.svg" alt="date"></span> <!-- data-toggle makes this the button -->
                         </div>
                     </div>
                 </div>
@@ -84,6 +92,10 @@
                         <span class="value" id="summary-total">-</span>
                     </div>
                 </div>
+
+                <p id="date-reference-warning" class="date-warning hidden">
+                    Note: The start date is provided for reference purposes only and does not affect any calculations.
+                </p>
 
                 <div class="amortization-table-container">
                     <table class="amortization-table">
