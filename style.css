@@ -308,11 +308,11 @@ input[type=number] {
 }
 
 .date-warning {
-    color: #FF6B6B; /* A clear, modern red */
-    padding: 0 24px; /* Aligns it with the summary grid content */
-    margin-bottom: 20px; /* Adds space above the amortization table */
-    font-size: 0.875rem; /* Makes it slightly smaller, like a footnote */
-    font-style: italic; /* Differentiates it as a note */
+    color: #FF8A8A;
+    padding: 0 24px;
+    margin-bottom: 20px;
+    font-size: 0.875rem;
+    font-style: italic;
     text-align: left;
 }
 
