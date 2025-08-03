@@ -20,6 +20,15 @@
     box-sizing: border-box;
 }
 
+/* ===== THIS IS THE CORRECTED RULE ===== */
+/* 'input' has been removed and the missing comma after it is fixed */
+button,
+select,
+input,
+textarea {
+    font-family: inherit; 
+}
+
 body {
     font-family: 'DM Sans', sans-serif;
     background-color: var(--bg-dark);
@@ -71,7 +80,7 @@ h1 {
     width: 306px;
     flex-shrink: 0; 
     background-color: var(--primary-card-bg);
-    border-radius: 12px;
+    border-radius: 4px;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -95,7 +104,7 @@ h1 {
     flex: 1; 
     background-color: var(--primary-card-bg);
     border: 1px solid var(--green);
-    border-radius: 8px;
+    border-radius: 0px;
     color: var(--text);
     padding: 10px;
     outline: none;
@@ -103,7 +112,6 @@ h1 {
     font-size: 1.5rem;
 }
 
-/* For browsers that support number input spinners */
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 
@@ -112,7 +120,6 @@ input[type=number]::-webkit-outer-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
-
 
 .input-field-wrapper input::placeholder {
     color: var(--text-muted);
@@ -128,21 +135,21 @@ input[type=number] {
 .input-field-wrapper .suffix {
     height: 58px;
     padding: 16px 8px;
+    font-family: 'Cabinet Grotesk', sans-serif;
     color: var(--text);
 	background-color: #58585B;
 	border: 1px solid var(--green);
     display: flex;
     align-items: center;
-    border-radius: 8px;
+    border-radius: 0px;
     font-size: 24px;
     font-weight: 700;
 }
 
-/* ===== NEW V2 STYLES ===== */
 .results-box {
     background-color: var(--result-card);
     border: 1px solid var(--green);
-    border-radius: 12px;
+    border-radius: 4px;
 }
 
 .results-header {
@@ -151,6 +158,7 @@ input[type=number] {
     align-items: center;
     padding: 16px 24px;
     border-bottom: 1px solid var(--green);
+    position: relative;
 }
 
 .results-header h2 {
@@ -163,11 +171,108 @@ input[type=number] {
     background: var(--primary-card-bg);
     border: 1px solid var(--green);
     color: var(--text);
-    border-radius: 8px;
+    border-radius: 0px;
     padding: 12px;
     display: grid;
     place-items: center;
     cursor: pointer;
+}
+
+.summary-grid {
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    gap: 16px 48px; /* Row gap and column gap */
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column; /* Stack main value and sub-label vertically */
+    gap: 4px;
+    width: auto; /* Override fixed width */
+}
+
+.summary-main {
+    display: flex;
+    align-items: baseline; /* Aligns the text nicely */
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.summary-item .label {
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 400;
+    flex-shrink: 0;
+    width: auto; /* Allow label width to be flexible */
+}
+
+.summary-main .value-group {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-left: auto; /* Push to the right */
+}
+
+.summary-item .value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text);
+    text-align: right;
+    flex-grow: 1; /* Allow value to take space */
+    width: auto;
+}
+
+.value.highlighted {
+    color: var(--green); /* Or your preferred highlight color */
+    font-weight: 700;
+}
+
+.savings-percent {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--green); /* Red for the negative percentage */
+    background-color: rgba(174, 208, 182, 0.1);
+    padding: 4px;
+    white-space: nowrap;
+    margin-left: 8px;
+    border-radius: 4px;
+}
+
+.summary-sub {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    text-align: left;
+    margin-left: 0;
+    padding-right: 30px; /* Aligns it under the percentage */
+    min-height: 1.2em; /* Prevents layout shift when text appears */
+    margin-top: 4px;
+}
+
+.summary-sub.hidden, .savings-percent.hidden {
+    visibility: hidden;
+}
+
+.summary-sub .savings {
+    font-weight: 700;
+    color: var(--green); /* Green for the savings amount */
+}
+
+.tenure-savings-container.hidden {
+    display: none;
+}
+
+/* Alternative styling for even more emphasis */
+.tenure-savings-container {
+    padding: 16px 0;
+    margin: 0 24px;
+    font-size: 0.875rem;
+    color: var(--text); /* Red text color */
+    font-weight: 500;
+}
+
+.tenure-highlight {
+    color: var(--green);
+    font-weight: 600;
+    font-size: 1rem;
 }
 
 .summary-grid {
@@ -181,9 +286,9 @@ input[type=number] {
 .summary-item {
     display: flex;
     width: 320px;
-    flex-direction: row;
+    flex-direction: column;
     gap: 8px;
-    align-items: center;
+    width: auto;
 }
 
 .summary-item .label {
@@ -201,18 +306,16 @@ input[type=number] {
 }
 
 .amortization-table-container {
-    border-radius: 8px;
+    border-radius: 0px;
     margin: 0px 24px 24px 24px;
     overflow: hidden;
 }
 
-/* The main table that holds the year rows */
 .amortization-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-/* Style for the simple, collapsed year row */
 .year-row td {
     background-color: var(--primary-card-bg);
     border-bottom: 1px solid var(--green);
@@ -234,22 +337,18 @@ input[type=number] {
 }
 
 .toggle-icon {
-    /* This makes the rotation animation smooth, taking 0.3 seconds */
     transition: transform 0.3s ease-in-out;
 }
 
-/* Rule 2: This applies the rotation when the parent row is open */
 .year-row.open .toggle-icon {
     transform: rotate(180deg);
 }
 
-/* This is the TR that will hold our injected details table */
 .details-container-row td {
-    padding: 0; /* Remove padding to allow the inner table to be flush */
+    padding: 0;
     border-bottom: 1px solid var(--border-color);
 }
 
-/* This is the dynamically injected table with monthly details */
 .details-table {
     width: 100%;
     border-collapse: collapse;
@@ -266,16 +365,11 @@ input[type=number] {
 }
 
 .details-table th {
-    /* 1. Sets the background color. Let's use your primary card color. */
     background-color: var(--green);
-    /* 2. Sets the text color to white. */
     color: var(--black); 
     font-size: 1rem;
-    /* 3. Sets the boldness of the text (e.g., 600 for semi-bold) */
     font-weight: 500;
-    /* 4. Controls the spacing inside the header cells */
     padding: 8px 24px;
-    /* 5. Aligns the text ('left', 'center', or 'right') */
     text-align: right;
     border-right: 1px solid var(--border-color2);
     border-bottom: 1px solid var(--border-color2); 
@@ -291,7 +385,6 @@ input[type=number] {
     text-align: left;
 }
 
-/* The summary row at the bottom of the details table */
 .summary-row {
     background-color: var(--secondary-card-bg);
     font-weight: 700;
@@ -299,10 +392,9 @@ input[type=number] {
 }
 
 .summary-row td {
-    border-bottom: none; /* No bottom border on the summary */
+    border-bottom: none;
 }
 
-/* A simple utility class to hide rows */
 .hidden {
     display: none;
 }
@@ -316,7 +408,6 @@ input[type=number] {
     text-align: left;
 }
 
-/* Style for the placeholder row when there's no data */
 .placeholder-row td {
     color: var(--text-muted);
     text-align: center;
@@ -324,38 +415,23 @@ input[type=number] {
     background-color: var(--primary-card-bg);
 }
 
-.results-header {
-    position: relative; /* CRITICAL for positioning the popover */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--green);
-}
-
-/* Rule 2: Positions the popover card itself */
 .modal-card {
-    position: absolute; /* Takes it out of the normal flow */
-    top: 80%; /* Positions it right below the header */
-    right: 20px;  /* Aligns it to the right side */
-    margin-top: 4px; /* Adds a small space below the header */
-    
-    /* The rest of the styling is similar */
+    position: absolute;
+    top: 80%;
+    right: 20px;
+    margin-top: 4px;
     background-color: var(--result-card);
-    border-radius: 12px;
+    border-radius: 0px;
     border: 1px solid var(--green);
     width: 100%;
     max-width: 280px;
     z-index: 1000;
-
-    /* For the hide/show animation */
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-/* Rule 3: A simple class to hide the popover */
 .modal-card.hidden {
     opacity: 0;
-    transform: translateY(-10px); /* Moves it up slightly when hidden */
+    transform: translateY(-10px);
     pointer-events: none;
 }
 
@@ -381,13 +457,12 @@ input[type=number] {
     font-weight: 500;
 }
 
-/* The wrapper for the date input field */
 .date-input-wrapper {
     display: flex;
     align-items: center;
     background-color: var(--primary-card-bg);
     border: 1px solid var(--green);
-    border-radius: 8px;
+    border-radius: 0px;
     padding: 12px 16px;
     margin: 0px 16px 20px 16px;
 }
@@ -397,7 +472,7 @@ input[type=number] {
 }
 
 .date-input-wrapper input {
-    flex-grow: 1; /* Makes the input take up all available space */
+    flex-grow: 1;
     min-width: 0;
     background: none;
     border: none;
@@ -412,7 +487,370 @@ input[type=number] {
     color: var(--text-muted);
 }
 
-/* Responsive adjustments can be refined later */
+/* ======================================= */
+/* ===== REUSABLE LAYERED BUTTON STYLES ===== */
+/* ======================================= */
+.prepayment-cta-container {
+    margin-top: 40px;
+}
+
+.prepayment-btn-wrapper {
+    display: inline-block;
+    background-color: #CEE4D3;
+    border-radius: 0px;
+    transition: transform 0.2s ease-out;
+}
+
+.btn-layered {
+    display: block;
+    position: relative;
+    border: none;
+    border-radius: 0px;
+    padding: 16px 20px;
+    font-size: 1.25rem;
+    font-weight: 500;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    cursor: pointer;
+    background-color: #AED0B6;
+    color: var(--black);
+    transition: all 0.2s ease-out;
+}
+
+.prepayment-btn-wrapper:hover .btn-layered {
+    transform: translate(-6px, -6px);
+    background-color: var(--secondary-card-bg);
+    color: var(--text);
+}
+
+.prepayment-btn-wrapper:active .btn-layered {
+    transform: translate(-2px, -2px);
+    transition: transform 0.1s;
+}
+
+/* ======================================= */
+/* ===== PREPAYMENT MODAL STYLES ===== */
+/* ======================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 80px;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    z-index: 2000;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.modal-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.prepayment-modal-card {
+    background-color: var(--result-card);
+    border: 1px solid var(--green);
+    border-radius: 0px;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--green);
+    padding: 24px;
+}
+
+.modal-header h2 {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.date-picker-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.modal-inputs-row {
+    display: flex;
+    gap: 20px;
+}
+
+.modal-inputs-row .input-group {
+    flex: 1;
+    width: auto;
+}
+
+.modal-body .input-field-wrapper [data-toggle] {
+    cursor: pointer;
+}
+
+.or-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-color2);
+}
+
+.or-divider:not(:empty)::before {
+    margin-right: .5em;
+}
+
+.or-divider:not(:empty)::after {
+    margin-left: .5em;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid var(--green);
+    padding: 24px;
+}
+
+.modal-tabs {
+    display: flex;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 4px 0px;
+    font-size: 1rem;
+    font-weight: 500;
+    width: 100px;
+    cursor: pointer;
+    position: relative;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+}
+
+.tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--green);
+    transform: scaleX(0);
+    transition: transform 0.3s ease-in-out;
+}
+
+.tab-btn.active {
+    color: var(--text);
+}
+
+.tab-btn.active::after {
+    transform: scaleX(1);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ======================================= */
+/* ===== CUSTOM PREPAYMENT TABLE STYLES ===== */
+/* ======================================= */
+.prepayment-table-container {
+    display: inline-block; 
+    border: 1px solid var(--border-color2);
+    overflow: hidden;
+}
+
+.prepayment-table-container .details-table {
+    table-layout: fixed;
+    width: auto;
+}
+
+.prepayment-table-container .details-table th {
+    text-align: left;
+}
+
+.prepayment-table-container .details-table th,
+.prepayment-table-container .details-table td {
+    width: 33.33%; 
+    max-width: 250px;
+}
+
+.prepayment-table-container .details-table td {
+    padding: 8px 24px;
+}
+
+.prepayment-table-container .details-table tfoot td {
+    border-right: none;
+}
+
+.prepayment-table-container .details-table th:last-child {
+    text-align: right;
+}
+
+
+
+.prepayment-table-container .prepayment-date-cell .input-field-wrapper {
+    /* This is the first key step */
+    display: flex;
+    /* This vertically centers the text and the icon */
+    align-items: center;
+    /* This ensures the wrapper fills the entire table cell */
+    width: 100%;
+}
+
+.prepayment-table-container .input-field-wrapper .prefix {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    color: var(--text);
+    text-align: right;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    background: none;
+    height: auto;
+    padding: 0px;
+}
+
+.prepayment-table-container .prepayment-date-cell .input-field-wrapper input {
+    /* THIS IS THE MAGIC PROPERTY */
+    flex-grow: 1;
+    /* This is a common flexbox fix to prevent inputs from overflowing */
+    min-width: 0;
+}
+
+.prepayment-table-container td:not(.prepayment-date-cell) .input-field-wrapper {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* ===== THIS IS THE CORRECTED RULE FOR THE TABLE INPUTS ===== */
+.prepayment-table-container .input-field-wrapper input {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0px;
+    border: none;
+    background: none;
+    outline: none;
+}
+
+.prepayment-table-container input::placeholder {
+    color: var(--text-muted);
+}
+
+.prepayment-error-row td {
+    color: #FF6B6B;
+    font-size: 0.825rem;
+    font-weight: 500;
+    text-align: right !important;
+    font-style: italic;
+    padding: 4px 24px 8px 24px !important;
+    border-right: none;
+    border-bottom: none;
+    margin: 0;
+}
+
+.add-row-btn {
+    padding: 8px 16px 8px 0px;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: none;
+    color: var(--green);
+}
+
+/* ======================================= */
+/* ===== CUSTOM RADIO BUTTON STYLES ===== */
+/* ======================================= */
+
+.radio-group{
+    background-color: var(--primary-card-bg);
+    max-width: 308px;
+    padding: 24px;
+    display: flex;
+    cursor: pointer;
+    border: 1px solid var(--green);
+}
+
+.radio-group input[type="radio"] {
+    appearance: none; /* Remove default styling */
+    width: 0;        /* Set width to 0 */
+    height: 0;       /* Set height to 0 */
+    visibility: hidden; /* Ensure it's not visible */
+    display: none;   /* Remove it from the layout */
+}
+
+/* 2. Style the label to handle the icon and text */
+.radio-group label {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex; /* Use flexbox for easy alignment */
+    gap: 12px;
+    align-items: center; /* Align items vertically */
+    /* padding-left: 30px; */ /* Not needed with flexbox and margin on input */
+    user-select: none; /* Prevent text selection on label click */
+}
+
+/* 3. Create the custom icon using the label's ::before pseudo-element */
+/* This targets the label that comes immediately AFTER the hidden radio input */
+.radio-group input[type="radio"] + label::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    /* Set the default (unchecked) SVG */
+    background-image: url('assets/radio.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    /* Add a bit of transition for smoothness if desired */
+    transition: background-image 0.2s ease;
+    /* Ensure it doesn't shrink in flex layout */
+    flex-shrink: 0;
+}
+
+/* 4. Change the icon when the radio button is checked */
+.radio-group input[type="radio"]:checked + label::before {
+    /* Set the checked SVG */
+    background-image: url('assets/radio-selected.svg');
+}
+
 @media (max-width: 768px) {
     .container { margin: 20px auto; }
     .calculator-inputs { flex-direction: column; }

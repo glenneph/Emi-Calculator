@@ -75,22 +75,55 @@
                     </div>
                 </div>
                 <div class="summary-grid">
+                    <!-- Monthly EMI -->
                     <div class="summary-item">
-                        <span class="label">Monthly EMI</span>
-                        <span class="value" id="summary-emi">-</span>
+                        <div class="summary-main">
+                            <span class="label">Monthly EMI</span>
+                            <span class="value" id="summary-emi">-</span>
+                        </div>
                     </div>
+                    
+                    <!-- Inflation Adjusted Loss -->
                     <div class="summary-item">
-                        <span class="label">Inflation Adjusted Loss</span>
-                        <span class="value" id="summary-inflation-loss">-</span>
+                        <div class="summary-main">
+                            <span class="label">Inflation Adjusted Loss</span>
+                            <span class="value highlighted" id="summary-inflation-loss">-</span>
+                            <span class="savings-percent" id="inflation-loss-percent">-</span>
+                        </div>
+                        <div class="summary-sub">
+                            <span>you'll save <span class="savings" id="inflation-loss-saved">-</span></span>
+                        </div>
                     </div>
+                    
+                    <!-- Interest Amount -->
                     <div class="summary-item">
-                        <span class="label">Interest Amount</span>
-                        <span class="value" id="summary-interest">-</span>
+                        <div class="summary-main">
+                            <span class="label">Interest Amount</span>
+                            <div class="value-group">
+                                <span class="value highlighted" id="summary-interest">-</span>
+                                <span class="savings-percent" id="interest-percent">-</span>
+                            </div>
+                        </div>
+                        <div class="summary-sub">
+                            <span>you'll save <span class="savings" id="interest-saved">-</span></span>
+                        </div>
                     </div>
+                    
+                    <!-- Total Amount -->
                     <div class="summary-item">
-                        <span class="label">Total Amount</span>
-                        <span class="value" id="summary-total">-</span>
+                        <div class="summary-main">
+                            <span class="label">Total Amount</span>
+                            <span class="value highlighted" id="summary-total">-</span>
+                            <span class="savings-percent" id="total-percent">-</span>
+                        </div>
+                        <div class="summary-sub">
+                            <span>you'll save <span class="savings" id="total-saved">-</span></span>
+                        </div>
                     </div>
+                </div>
+                <!-- Tenure Savings - Placed outside the grid for full width -->
+                <div class="tenure-savings-container hidden">
+                    <span id="tenure-savings-text"></span>
                 </div>
 
                 <p id="date-schedule-warning" class="date-warning hidden">
@@ -108,9 +141,93 @@
                     </table>
                 </div>
             </div>
+             <!-- ===== ADD THIS NEW BLOCK FOR THE BUTTON ===== -->
+            <div id="prepayment-container" class="prepayment-cta-container">
+                <div class="prepayment-btn-wrapper">
+                    <button id="prepayment-btn" class="btn-layered">Check Prepayments</button>
+                </div>
+            </div>
+        </div>
         </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="script.js"></script>
+
+    <div id="prepayment-modal-overlay" class="modal-overlay hidden">
+        <div class="prepayment-modal-card">
+            
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h2>Check Prepayments</h2>
+                <!-- <button id="modal-close-btn"  class="modal-close-btn">×</button> -->
+                <button id="prepayment-modal-close-btn" class="settings-btn">
+                    <img src="assets/cancel.svg" alt="Close Modal">
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                <!-- Tab Navigation -->
+                <div class="modal-tabs">
+                    <button class="tab-btn active" data-tab="custom">Custom</button>
+                    <button class="tab-btn" data-tab="templates">Templates</button>
+                </div>
+
+                <!-- Tab Content Area -->
+                <div class="tab-content-container">
+                    <!-- "Custom" Tab Content Panel -->
+                    <div id="custom" class="tab-content active">
+                        <div class="prepayment-table-container">
+                            <table class="details-table">
+                                <thead>
+                                    <tr>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Prepayment Amount</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="prepayment-custom-body">
+                                    <!-- JavaScript will generate the rows here -->
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3">
+                                            <button id="add-prepayment-row-btn" class="add-row-btn">
+                                                <span class="material-symbols-outlined">add</span> Date
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- "Templates" Tab Content Panel -->
+                    <div id="templates" class="tab-content">
+                        <!-- ===== REPLACE with this NEW, simpler structure ===== -->
+                        <div class="template-options">
+                            <!-- Template 1: 16 EMI Rule -->
+                            <div class="radio-group">
+                                <input type="radio" id="template-16-emi" name="prepayment_template" value="16-emi" checked>
+                                <label for="template-16-emi">16 EMI Rule</label>
+                            </div>
+                        <!-- More templates can be added here in the future --> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <div class="prepayment-btn-wrapper">
+                    <button id="prepayment-submit-btn" class="btn-layered">Submit</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 </body>
 </html>
