@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const prepaymentBtn = document.getElementById('prepayment-btn');
     const prepaymentModalOverlay = document.getElementById('prepayment-modal-overlay');
     const modalCloseBtn = document.getElementById('prepayment-modal-close-btn');
+    // NEW: How to Use Modal Elements
+    const howToUseModalOverlay = document.getElementById('how-to-use-modal-overlay');
+    const howToUseModalCloseBtn = document.getElementById('how-to-use-modal-close-btn');
+    const howToUseBtn             = document.getElementById('how-to-use-btn');
+    const howToUseIframe       = howToUseModalOverlay.querySelector('iframe');      
+    const howToUseOriginalSrc  = howToUseIframe?.src || '';
     // NEW: Custom Prepayment Elements
     const prepaymentCustomBody = document.getElementById('prepayment-custom-body');
     const addPrepaymentRowBtn = document.getElementById('add-prepayment-row-btn');
@@ -954,40 +960,63 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 1. Re-sum every month's totalPayment (EMI + prepayment)
-  const totalPaid = newSchedule
-    .reduce((sum, entry) => sum + (entry.totalPayment || 0), 0);
-
+    const principalAmount = parseFloat(loanAmountInput.value) || 0;
   // 2. Recompute total interest
   const newTotalInterest = newSchedule
     .reduce((sum, entry) => sum + (entry.interest || 0), 0);
 
-  // 3. (Optional) Recompute inflation loss exactly as you did before…
-  let newInflationLoss = 0;
-  const adjustedRate = Math.max(0, originalMetrics.annualInterestRate - INFLATION_RATE);
-  if (adjustedRate > 0) {
-    const r = (adjustedRate/12)/100;
-    const morMonths = (parseFloat(moratoriumInput.value)||0)*12;
-    const paidMonths = newSchedule.filter(e => e.balance>0||e.emi>0).length;
-    let effP = parseFloat(loanAmountInput.value)||0;
-    if (morMonths>0) effP *= Math.pow(1+r, morMonths);
-    if (paidMonths>0) {
-      const adjEmi = (effP*r*Math.pow(1+r, paidMonths)) /
-                     (Math.pow(1+r, paidMonths)-1);
-      if (isFinite(adjEmi)) newInflationLoss = (adjEmi*paidMonths) - effP;
-    }
+// 3. Calculate inflation-adjusted loss for the new scenario
+let newInflationLoss = 0;
+const adjustedRate = Math.max(0, originalMetrics.annualInterestRate - INFLATION_RATE);
+if (adjustedRate > 0) {
+  const r_adjusted = (adjustedRate / 12) / 100;
+  const originalTenureMonths = parseFloat(tenureInput.value) * 12;
+  const moratoriumMonths = (parseFloat(moratoriumInput.value) || 0) * 12;
+  
+  // Calculate what the total payment would be with inflation-adjusted rate
+  let effectivePrincipal_adjusted = principalAmount;
+  if (moratoriumMonths > 0) {
+    effectivePrincipal_adjusted = principalAmount * Math.pow(1 + r_adjusted, moratoriumMonths);
   }
+  
+  const emi_adjusted = (effectivePrincipal_adjusted * r_adjusted * Math.pow(1 + r_adjusted, originalTenureMonths)) / 
+                       (Math.pow(1 + r_adjusted, originalTenureMonths) - 1);
+  
+  if (isFinite(emi_adjusted)) {
+// 1) figure out how many months you actually paid:
+const actualMonthsPaid = newSchedule.filter(e => e.balance > 0 || e.emi > 0).length;
 
-  // 4. Build your new metrics object in one go
-  const P = parseFloat(loanAmountInput.value) || 0;
-  const newMetrics = {
-    principal: P,
-    emi: originalMetrics.emi,      // keep the original EMI display
-    interest: newTotalInterest,
-    total: totalPaid,              // <— our freshly computed totalPaid
-    schedule: newSchedule,
-    annualInterestRate: originalMetrics.annualInterestRate,
-    inflationLoss: newInflationLoss
-  };
+// 2) recompute the “inflation-adjusted EMI” using N = actualMonthsPaid
+const emiAdjustedForNewN =
+    (effectivePrincipal_adjusted * r_adjusted * Math.pow(1 + r_adjusted, actualMonthsPaid))
+    / (Math.pow(1 + r_adjusted, actualMonthsPaid) - 1);
+
+// 3) now your “inflation loss” is the difference between what you’d pay
+//    at that adjusted-rate EMI for those months vs. the principal
+newInflationLoss = (emiAdjustedForNewN * actualMonthsPaid) - principalAmount;
+
+// 4) keep the non-negative guard
+newInflationLoss = Math.max(0, newInflationLoss);
+  }
+}
+
+// 3. FIXED: Total Amount = Principal + Interest ONLY (no prepayments)
+const newTotalAmount = principalAmount + newTotalInterest;
+
+// 4. Build the corrected metrics obriject
+const newMetrics = {
+  principal: principalAmount,
+  emi:       originalMetrics.emi,           // keep the original EMI display
+  interest:  newTotalInterest,
+  total:     newTotalAmount,                // Principal + Interest only
+  schedule:  newSchedule,
+  // fix the typo here:
+  annualInterestRate: originalMetrics.annualInterestRate,
+  // inject the value you just calculated above:
+  inflationLoss:       newInflationLoss
+};
+
+console.log("🔍 newMetrics:", newMetrics);
 
   // 5. Finally update the UI
   updateSummary(newMetrics, originalMetrics);
@@ -1075,6 +1104,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Modal Open/Close Logic ---
     function openPrepaymentModal() { if (prepaymentModalOverlay) { prepaymentModalOverlay.classList.remove('hidden'); } }
     function closePrepaymentModal() { if (prepaymentModalOverlay) { prepaymentModalOverlay.classList.add('hidden'); } }
+
+function openHowToUseModal() {
+  // reload the player each time
+  howToUseIframe.src = howToUseOriginalSrc;
+  howToUseModalOverlay.classList.remove('hidden');
+}
+howToUseBtn.addEventListener('click', openHowToUseModal);
+
+function closeHowToUseModal() {
+  howToUseModalOverlay.classList.add('hidden');
+  // unload the video
+  howToUseIframe.src = '';
+}
+howToUseModalCloseBtn.addEventListener('click', closeHowToUseModal);
 
     // --- Tab Switching Logic (Existing) ---
     const modalTabsContainer = document.querySelector('.modal-tabs');
@@ -1227,6 +1270,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    if (howToUseBtn) {
+    howToUseBtn.addEventListener('click', function() {
+        openHowToUseModal();
+    });
+
+    if (howToUseBtn) {
+  howToUseBtn.addEventListener('click', openHowToUseModal);
+}
+}
+
+const blogsBtn = document.getElementById('blogs-btn');
+if (blogsBtn) {
+  blogsBtn.addEventListener('click', () => {
+  window.open(
+    'https://small-carnation-b33.notion.site/Blogs-Practices-to-become-DEBT-FREE-10x-faster-245fbe91669480cb8d45ca1e94ea06ad?source=copy_link',
+    '_blank',
+    'noopener'
+  );
+  });
+}
+
     settingsBtn.addEventListener('click', (e) => { e.stopPropagation(); configPopover.classList.toggle('hidden'); });
     document.addEventListener('click', (e) => {
         const isClickInside = configPopover.contains(e.target) || settingsBtn.contains(e.target);
@@ -1241,8 +1305,24 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target === prepaymentModalOverlay) { closePrepaymentModal(); }
         });
     }
+
+    // NEW: How to Use Modal Event Listeners
+    if (howToUseModalCloseBtn) { howToUseModalCloseBtn.addEventListener('click', closeHowToUseModal); }
+    if (howToUseModalOverlay) {
+        howToUseModalOverlay.addEventListener('click', (e) => {
+            if (e.target === howToUseModalOverlay) { closeHowToUseModal(); }
+        });
+    }
+
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && prepaymentModalOverlay && !prepaymentModalOverlay.classList.contains('hidden')) { closePrepaymentModal(); }
+    if (e.key === 'Escape') {
+        if (prepaymentModalOverlay && !prepaymentModalOverlay.classList.contains('hidden')) { 
+            closePrepaymentModal(); 
+        }
+        if (howToUseModalOverlay && !howToUseModalOverlay.classList.contains('hidden')) { 
+            closeHowToUseModal(); 
+        }
+    }
     });
 
     // --- INITIALIZATION ---

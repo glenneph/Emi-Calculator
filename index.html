@@ -12,7 +12,18 @@
 </head>
 <body>
     <header>
-        EMI Calculator
+        <div class="header-content">
+            <div class="header-title">EMI Calculator</div>
+            <div class="header-buttons">
+                <button class="header-btn" id="how-to-use-btn">
+                    <img src="assets/youtube.svg" alt="How to Use" class="header-btn-icon">
+                    How to Use
+                </button>
+                <button class="header-btn" id="blogs-btn">
+                    Blogs
+                </button>
+            </div>
+        </div>
     </header>
     <main class="container">
         <div class="calculator">
@@ -223,6 +234,35 @@
             <div class="modal-footer">
                 <div class="prepayment-btn-wrapper">
                     <button id="prepayment-submit-btn" class="btn-layered">Submit</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- How to Use Modal -->
+    <div id="how-to-use-modal-overlay" class="modal-overlay hidden">
+        <div class="how-to-use-modal-card">
+            
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h2>How to Use</h2>
+                <button id="how-to-use-modal-close-btn" class="settings-btn">
+                    <img src="assets/cancel.svg" alt="Close Modal">
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body how-to-use-body">
+                <div class="youtube-video-container">
+                    <iframe 
+                        src="https://www.youtube.com/embed/PPyE_jmx5lc?si=1fF6FKqPtomv4SHx" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" 
+                        allowfullscreen>
+                    </iframe>
                 </div>
             </div>
 
