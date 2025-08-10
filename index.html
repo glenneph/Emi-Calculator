@@ -12,26 +12,44 @@
 </head>
 <body>
     <header>
-        <div class="header-content">
-            <div class="header-title">EMI Calculator</div>
-            <div class="header-buttons">
-                <button class="header-btn" id="how-to-use-btn">
-                    <img src="assets/youtube.svg" alt="How to Use" class="header-btn-icon">
-                    How to Use
-                </button>
-                <button class="header-btn" id="blogs-btn">
-                    Blogs
-                </button>
-            </div>
+    <div class="header-content">
+        <div class="header-title">EMI Calculator</div>
+
+        <!-- 🍔 Hamburger toggle -->
+        <button id="menu-toggle" class="menu-btn">
+        <img src="assets/menu.svg" alt="Menu">
+        </button>
+
+        <div class="header-buttons">
+        <button class="header-btn" id="how-to-use-btn">
+            <img src="assets/youtube.svg" alt="How to Use" class="header-btn-icon">
+            How to Use
+        </button>
+        <button class="header-btn" id="blogs-btn">
+            Blogs
+        </button>
         </div>
+    </div>
     </header>
+
+    <div id="mobile-feature-banner" class="mobile-feature-banner" role="note" aria-live="polite">
+        <span>Turn On Desktop Site to utilize all the functions!</span>
+    </div>
+    
+    <!-- ▼▼▼ NEW DRAWER HTML - ADDED AS REQUESTED ▼▼▼ -->
+    <div id="drawer-overlay" class="drawer-overlay"></div>
+    <nav id="mobile-drawer" class="mobile-drawer">
+      <!-- Buttons will be cloned in via JS -->
+    </nav>
+    <!-- ▲▲▲ END OF NEW DRAWER HTML ▲▲▲ -->
+
     <main class="container">
         <div class="calculator">
             <!-- ===== INPUT SECTION ===== -->
             <div class="calculator-inputs">
                 <!-- Loan Amount -->
                 <div class="input-group">
-                    <label for="loanAmount"><img src="assets/loan-amount.svg" alt="loan-amount" class="icon-bg"> Loan Amount</label>
+                    <label for="loanAmount"><span class="icon-bg"><img src="assets/loan-amount.svg" alt="loan-amount"></span>Loan Amount</label>
                     <div class="input-field-wrapper">
                         <span class="prefix"> <img src="assets/rupee.svg"> </span>
                         <input type="number" id="loanAmount" placeholder="Enter Amount" min="1000" max="100000000">
@@ -40,7 +58,7 @@
 
                 <!-- Rate of Interest -->
                 <div class="input-group">
-                    <label for="interestRate"><img src="assets/rate-of-interest.svg" alt="rate-of-interest" class="icon-bg"> Rate Of Interest</label>
+                    <label for="interestRate"><span class="icon-bg"><img src="assets/rate-of-interest.svg" alt="rate-of-interest"></span> Rate Of Interest</label>
                     <div class="input-field-wrapper">
                         <input type="number" id="interestRate" placeholder="Enter Interest" step="0.1" min="1" max="100">
                         <span class="suffix"> <img src="assets/percentage.svg"> </span>
@@ -49,7 +67,7 @@
 
                 <!-- Tenure -->
                 <div class="input-group">
-                    <label for="tenure"><img src="assets/tenure.svg" alt="tenure" class="icon-bg"> Tenure</label>
+                    <label for="tenure"><span class="icon-bg"><img src="assets/tenure.svg" alt="tenure"></span> Tenure</label>
                     <div class="input-field-wrapper">
                         <input type="number" id="tenure" placeholder="Enter Tenure" min="1" max="30">
                         <span class="suffix h1" style="font-size: 1.5rem;" >yrs</span>
@@ -57,7 +75,7 @@
                 </div>
 
                 <div class="input-group">
-                        <label for="moratorium"><img src="assets/moratorium.svg" alt="moratorium" class="icon-bg"> Moratorium Period</label>
+                        <label for="moratorium"><span class="icon-bg"><img src="assets/moratorium.svg" alt="moratorium"></span> Moratorium Period</label>
                         <div class="input-field-wrapper">
                             <input type="number" id="moratorium" value="0" step="0.1" min="0" max="3">
                             <span class="suffix h1" style="font-size: 1.5rem;">yrs</span>
@@ -138,7 +156,7 @@
                 </div>
 
                 <p id="date-schedule-warning" class="date-warning hidden">
-                    Note: The start date is provided for reference purposes only and does not affect any calculations.
+                    Note: The start date is for reference purposes only and does not affect any calculations.
                 </p>
 
                 <div class="amortization-table-container">
@@ -170,7 +188,6 @@
             <!-- Modal Header -->
             <div class="modal-header">
                 <h2>Check Prepayments</h2>
-                <!-- <button id="modal-close-btn"  class="modal-close-btn">×</button> -->
                 <button id="prepayment-modal-close-btn" class="settings-btn">
                     <img src="assets/cancel.svg" alt="Close Modal">
                 </button>
@@ -217,7 +234,6 @@
 
                     <!-- "Templates" Tab Content Panel -->
                     <div id="templates" class="tab-content">
-                        <!-- ===== REPLACE with this NEW, simpler structure ===== -->
                         <div class="template-options">
                             <!-- Template 1: 16 EMI Rule -->
                             <div class="radio-group">
