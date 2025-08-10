@@ -781,7 +781,21 @@ input[type=number] {
 }
 
 .prepayment-table-container .details-table th {
-    text-align: left;
+    text-align: right;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.prepayment-table-container .details-table td:nth-child(3) .input-field-wrapper{
+  display: flex;       /* already is, but keep it explicit here */
+  width: 100%;
+}
+
+.prepayment-table-container .details-table td:nth-child(3) input{
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;        /* critical: allows flex child to grow/shrink to fill */
+  text-align: right;   /* keep your right align; remove if not needed */
 }
 
 .prepayment-table-container .details-table th,
@@ -1211,6 +1225,14 @@ input[type=number] {
 /* If the container clips the bleed, unclip on mobile */
 .amortization-table-container { overflow: visible; }
 
+.modal-overlay {
+    padding: 24px;
+}
+
+   .modal-header h2{
+     font-size: 20px;   
+   }
+
 }
 
 /* Phones (≤480px) — global font-size shrink */
@@ -1312,5 +1334,9 @@ input[type=number] {
 
   .savings-percent { font-size: 0.85rem; }
   .summary-sub { padding-right: 0; margin-top: 2px; }
+
+  .modal-overlay {
+    padding: 20px;
+}
 }
 
