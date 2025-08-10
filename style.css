@@ -1220,7 +1220,7 @@ input[type=number] {
   box-sizing: border-box;
 }
 
-.btn-layered, .settings-btn {display: none;}
+.btn-layered, .results-header .settings-btn {display: none;}
 
 /* If the container clips the bleed, unclip on mobile */
 .amortization-table-container { overflow: visible; }
