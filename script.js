@@ -87,75 +87,91 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- CORE LOGIC ---
-    function calculateAndDisplayResults() {
-        document.querySelectorAll('.savings-percent, .summary-sub').forEach(el => {
-            el.classList.add('hidden');
-            el.style.display = 'none';
-        });
-        const P = parseFloat(loanAmountInput.value);
-        const annualInterestRate = parseFloat(interestRateInput.value);
-        const tenureInYears = parseFloat(tenureInput.value);
-        const moratoriumInYears = parseFloat(moratoriumInput.value) || 0;
-        if (isNaN(P) || isNaN(annualInterestRate) || isNaN(tenureInYears) || P <= 0 || annualInterestRate <= 0 || tenureInYears <= 0) {
-            resetUI();
-            return;
-        }
-        amortizationContainer.classList.remove('hidden');
-        if (prepaymentContainer) {
-            prepaymentContainer.style.display = 'flex';
-            prepaymentContainer.style.justifyContent = 'left';
-        }
-        const r_actual = (annualInterestRate / 12) / 100;
-        const n = tenureInYears * 12;
-        const m = moratoriumInYears * 12;
-        let effectivePrincipal = P;
-        if (m > 0) {
-            effectivePrincipal = P * Math.pow(1 + r_actual, m);
-        }
-        const emi = (effectivePrincipal * r_actual * Math.pow(1 + r_actual, n)) / (Math.pow(1 + r_actual, n) - 1);
-        const originalTotalInterest = (emi * n) - P;
-        const originalTotalPaid = P + originalTotalInterest;
-        originalMetrics = {
-            principal: P,
-            emi: emi,
-            interest: originalTotalInterest,
-            total: originalTotalPaid,
-            schedule: [],
-            annualInterestRate: annualInterestRate,
-            inflationLoss: 0
-        };
-        const adjustedInterestRate = Math.max(0, annualInterestRate - INFLATION_RATE);
-        if (adjustedInterestRate > 0) {
-            const r_adjusted = (adjustedInterestRate / 12) / 100;
-            let effectivePrincipal_adjusted = P;
-            if (m > 0) {
-                effectivePrincipal_adjusted = P * Math.pow(1 + r_adjusted, m);
-            }
-            const emi_adjusted = (effectivePrincipal_adjusted * r_adjusted * Math.pow(1 + r_adjusted, n)) / (Math.pow(1 + r_adjusted, n) - 1);
-            if (isFinite(emi_adjusted)) {
-                originalMetrics.inflationLoss = (emi_adjusted * n) - P;
-            }
-        }
-        updateSummary(originalMetrics);
-        const dateParts = startDateInput.value.split('-');
-        if (dateParts.length === 3) {
-            const day = parseInt(dateParts[0], 10);
-            const month = parseInt(dateParts[1], 10) - 1;
-            const year = parseInt(dateParts[2], 10);
-            const startDate = new Date(year, month, day);
-            if (!isNaN(startDate)) {
-                originalScheduleData = generateAmortizationData(P, emi, r_actual, n, m, startDate.getMonth(), startDate.getFullYear());
-                originalMetrics.schedule = originalScheduleData;
-                fullScheduleData = [...originalScheduleData];
-                renderAmortizationTable(fullScheduleData);
-                overallLoanStartDate = new Date(startDate);
-                const totalLoanMonths = n + m;
-                overallLoanEndDate = new Date(startDate);
-                overallLoanEndDate.setMonth(overallLoanEndDate.getMonth() + totalLoanMonths);
-                setupCustomPrepaymentTab();
-            }
+function calculateAndDisplayResults() {
+    document.querySelectorAll('.savings-percent, .summary-sub').forEach(el => {
+        el.classList.add('hidden');
+        el.style.display = 'none';
+    });
+    
+    const P = parseFloat(loanAmountInput.value);
+    const annualInterestRate = parseFloat(interestRateInput.value);
+    const tenureInYears = parseFloat(tenureInput.value);
+    const moratoriumInYears = parseFloat(moratoriumInput.value) || 0;
+    
+    if (isNaN(P) || isNaN(annualInterestRate) || isNaN(tenureInYears) || P <= 0 || annualInterestRate <= 0 || tenureInYears <= 0) {
+        resetUI();
+        return;
+    }
+    
+    amortizationContainer.classList.remove('hidden');
+    if (prepaymentContainer) {
+        prepaymentContainer.style.display = 'flex';
+        prepaymentContainer.style.justifyContent = 'left';
+    }
+    
+    const r_actual = (annualInterestRate / 12) / 100;
+    const n = tenureInYears * 12;
+    const m = moratoriumInYears * 12;
+    
+    // Calculate simple interest for moratorium period
+    const moratoriumSimpleInterest = m > 0 ? P * r_actual * m : 0;
+    
+    // Principal after moratorium = Original Principal + Simple Interest
+    let effectivePrincipal = P + moratoriumSimpleInterest;
+    
+    // Calculate EMI on the effective principal
+    const emi = (effectivePrincipal * r_actual * Math.pow(1 + r_actual, n)) / (Math.pow(1 + r_actual, n) - 1);
+    
+    // Total interest = Moratorium Simple Interest + EMI Interest
+    const originalTotalInterest = moratoriumSimpleInterest + (emi * n) - P;
+    const originalTotalPaid = P + originalTotalInterest;
+    
+    originalMetrics = {
+        principal: P,
+        emi: emi,
+        interest: originalTotalInterest,
+        total: originalTotalPaid,
+        schedule: [],
+        annualInterestRate: annualInterestRate,
+        inflationLoss: 0
+    };
+    
+    // Calculate inflation adjusted loss
+    const adjustedInterestRate = Math.max(0, annualInterestRate - INFLATION_RATE);
+    if (adjustedInterestRate > 0) {
+        const r_adjusted = (adjustedInterestRate / 12) / 100;
+        const moratoriumSimpleInterestAdjusted = m > 0 ? P * r_adjusted * m : 0;
+        let effectivePrincipal_adjusted = P + moratoriumSimpleInterestAdjusted;
+        
+        const emi_adjusted = (effectivePrincipal_adjusted * r_adjusted * Math.pow(1 + r_adjusted, n)) / (Math.pow(1 + r_adjusted, n) - 1);
+        if (isFinite(emi_adjusted)) {
+            originalMetrics.inflationLoss = moratoriumSimpleInterestAdjusted + (emi_adjusted * n) - P;
         }
     }
+    
+    updateSummary(originalMetrics);
+    
+    // Generate schedule with simple interest moratorium
+    const dateParts = startDateInput.value.split('-');
+    if (dateParts.length === 3) {
+        const day = parseInt(dateParts[0], 10);
+        const month = parseInt(dateParts[1], 10) - 1;
+        const year = parseInt(dateParts[2], 10);
+        const startDate = new Date(year, month, day);
+        if (!isNaN(startDate)) {
+            originalScheduleData = generateAmortizationData(P, emi, r_actual, n, m, startDate.getMonth(), startDate.getFullYear(), moratoriumSimpleInterest);
+            originalMetrics.schedule = originalScheduleData;
+            fullScheduleData = [...originalScheduleData];
+            renderAmortizationTable(fullScheduleData);
+            
+            overallLoanStartDate = new Date(startDate);
+            const totalLoanMonths = n + m;
+            overallLoanEndDate = new Date(startDate);
+            overallLoanEndDate.setMonth(overallLoanEndDate.getMonth() + totalLoanMonths);
+            setupCustomPrepaymentTab();
+        }
+    }
+}
 
     // ... (The rest of the JS functions are unchanged)
 
@@ -270,38 +286,67 @@ function renderAmortizationTable(schedule) {
   amortizationBody.innerHTML = tableHTML;
 }
 
-    function generateAmortizationData(principal, emi, monthlyRate, tenureMonths, moratoriumMonths, startMonthIndex, startYear) {
-        let balance = principal;
-        const schedule = [];
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        const totalDurationInMonths = moratoriumMonths + tenureMonths;
-        for (let i = 0; i < totalDurationInMonths; i++) {
-            const currentMonthIndex = (startMonthIndex + i) % 12;
-            const currentYear = startYear + Math.floor((startMonthIndex + i) / 12);
-            const interestPayment = balance * monthlyRate;
-            let principalPayment = 0;
-            let totalPayment = 0;
-            if (i < moratoriumMonths) {
-                balance += interestPayment;
-            } else {
-                principalPayment = emi - interestPayment;
-                totalPayment = emi;
-                balance -= principalPayment;
-            }
-            schedule.push({
-                year: currentYear,
-                month: monthNames[currentMonthIndex],
-                principal: principalPayment,
-                interest: interestPayment,
-                emi: totalPayment,
-                prepayment: 0,
-                total: totalPayment,
-                totalPayment: totalPayment,
-                balance: balance > 0 ? balance : 0
-            });
-        }
-        return schedule;
+function generateAmortizationData(
+  principal, emi, monthlyRate, tenureMonths, moratoriumMonths,
+  startMonthIndex, startYear
+) {
+  let principalBase = principal;                 // principal that earns simple interest during moratorium
+  let accruedMoratoriumInterest = 0;             // simple interest bucket
+  let outstanding = principalBase;               // what we show as balance
+  const schedule = [];
+  const totalMonths = moratoriumMonths + tenureMonths;
+  const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  for (let i = 0; i < totalMonths; i++) {
+    const mi = (startMonthIndex + i) % 12;
+    const year = startYear + Math.floor((startMonthIndex + i) / 12);
+
+    let interestPayment = 0, principalPayment = 0, prepayment = 0, totalPayment = 0;
+
+    if (i < moratoriumMonths) {
+      // SIMPLE interest on principal only (does not compound)
+      interestPayment = principalBase * monthlyRate;
+      accruedMoratoriumInterest += interestPayment;
+
+      // No EMI in moratorium
+      totalPayment = 0;
+      outstanding = principalBase + accruedMoratoriumInterest;
+    } else {
+      if (i === moratoriumMonths) {
+        // Roll accrued simple interest into balance once, when EMI starts
+        principalBase += accruedMoratoriumInterest;
+        outstanding = principalBase;
+        accruedMoratoriumInterest = 0;
+      }
+
+      interestPayment  = outstanding * monthlyRate;
+      principalPayment = Math.max(0, emi - interestPayment);
+
+      if (outstanding <= principalPayment) {
+        principalPayment = outstanding;
+        totalPayment = principalPayment + interestPayment; // last partial EMI
+        outstanding = 0;
+      } else {
+        outstanding -= principalPayment;
+        totalPayment = emi;
+      }
     }
+
+    schedule.push({
+      year,
+      month: monthNames[mi],
+      principal: principalPayment,
+      interest: interestPayment,
+      emi: i < moratoriumMonths ? 0 : totalPayment, // keep same shape as your code
+      prepayment,
+      total: i < moratoriumMonths ? 0 : totalPayment,
+      totalPayment: i < moratoriumMonths ? 0 : totalPayment,
+      balance: outstanding
+    });
+  }
+
+  return schedule;
+}
 
     function setupCustomPrepaymentTab() {
         customPrepaymentRows = [];
@@ -456,59 +501,95 @@ function renderAmortizationTable(schedule) {
         closePrepaymentModal();
     }
     
-    function calculateScheduleWithPrepayments(originalSchedule, prepaymentRows, loanStartDate) {
-        let newSchedule = JSON.parse(JSON.stringify(originalSchedule));
-        const prepaymentMap = {};
-        prepaymentRows.forEach(row => {
-            let currentDate = new Date(row.startDate);
-            while (currentDate <= row.endDate) {
-                const key = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`;
-                prepaymentMap[key] = (prepaymentMap[key] || 0) + parseFloat(row.amount);
-                currentDate.setMonth(currentDate.getMonth() + 1);
-            }
-        });
-        let runningBalance = parseFloat(loanAmountInput.value) || 0;
-        let loanClosed = false;
-        const monthlyRate = (parseFloat(interestRateInput.value) / 12) / 100;
-        const moratoriumMonths = (parseFloat(moratoriumInput.value) || 0) * 12;
-        for (let i = 0; i < newSchedule.length; i++) {
-            const entry = newSchedule[i];
-            if (loanClosed) {
-                Object.keys(entry).forEach(k => { if (typeof entry[k] === 'number' && k !== 'year' && k !== 'month') entry[k] = 0; });
-                continue;
-            }
-            const isMoratoriumMonth = i < moratoriumMonths;
-            const interestForMonth = runningBalance * monthlyRate;
-            entry.interest = interestForMonth;
-            if (isMoratoriumMonth) {
-                runningBalance += interestForMonth;
-                entry.principal = 0;
-                entry.emi = 0;
-            } else {
-                let principalFromEmi = entry.emi - interestForMonth;
-                if (principalFromEmi < 0) principalFromEmi = 0;
-                const monthKey = `${entry.year}-${new Date(Date.parse(entry.month +" 1, 2012")).getMonth() + 1}`;
-                const monthlyPrepayment = prepaymentMap[monthKey] || 0;
-                entry.prepayment = monthlyPrepayment;
-                const totalPrincipalReduction = principalFromEmi + monthlyPrepayment;
-                if (runningBalance <= totalPrincipalReduction) {
-                    entry.prepayment = runningBalance - principalFromEmi > 0 ? runningBalance - principalFromEmi : 0;
-                    entry.principal = principalFromEmi;
-                    if(runningBalance < principalFromEmi) entry.principal = runningBalance;
-                    entry.emi = entry.principal + interestForMonth;
-                    runningBalance = 0;
-                    loanClosed = true;
-                } else {
-                    runningBalance -= totalPrincipalReduction;
-                    entry.principal = principalFromEmi;
-                }
-            }
-            entry.total = entry.emi + entry.prepayment;
-            entry.totalPayment = entry.total;
-            entry.balance = runningBalance;
-        }
-        return { schedule: newSchedule, prepayments: prepaymentMap };
+function calculateScheduleWithPrepayments(originalSchedule, prepaymentRows, loanStartDate) {
+  let newSchedule = JSON.parse(JSON.stringify(originalSchedule));
+  const prepaymentMap = {};
+
+  // build YYYY-M -> amount map
+  prepaymentRows.forEach(row => {
+    let d = new Date(row.startDate);
+    while (d <= row.endDate) {
+      const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
+      prepaymentMap[key] = (prepaymentMap[key] || 0) + parseFloat(row.amount);
+      d.setMonth(d.getMonth() + 1);
     }
+  });
+
+  const originalPrincipal = parseFloat(loanAmountInput.value) || 0;
+  const monthlyRate = (parseFloat(interestRateInput.value) / 12) / 100;
+  const moratoriumMonths = (parseFloat(moratoriumInput.value) || 0) * 12;
+
+  // Track principal & simple interest separately during moratorium
+  let principalBase = originalPrincipal;
+  let accruedMoratoriumInterest = 0;
+  let outstanding = principalBase; // for display/balance
+
+  for (let i = 0; i < newSchedule.length; i++) {
+    const entry = newSchedule[i];
+
+    // month key for prepayment lookup
+    const monthKey = `${entry.year}-${new Date(Date.parse(entry.month + " 1, 2012")).getMonth() + 1}`;
+    let monthPrepay = prepaymentMap[monthKey] || 0;
+
+    if (i < moratoriumMonths) {
+      // SIMPLE interest on principal only
+      const interestForMonth = principalBase * monthlyRate;
+      accruedMoratoriumInterest += interestForMonth;
+      entry.interest = interestForMonth;
+
+      // Allow prepayment during moratorium (reduces principal going forward)
+      if (monthPrepay > 0) {
+        monthPrepay = Math.min(monthPrepay, principalBase);
+        principalBase -= monthPrepay;
+      }
+
+      entry.prepayment = monthPrepay;
+      entry.principal  = 0;                 // no EMI principal during moratorium
+      entry.emi       = 0;                  // still no EMI
+      entry.total     = monthPrepay;        // what you actually pay this month
+      entry.totalPayment = entry.total;
+
+      outstanding = principalBase + accruedMoratoriumInterest;
+      entry.balance = outstanding;
+      continue;
+    }
+
+    // EMI period begins — roll the accrued simple interest in once
+    if (i === moratoriumMonths) {
+      outstanding = principalBase + accruedMoratoriumInterest;
+      accruedMoratoriumInterest = 0;
+    }
+
+    const interestForMonth = outstanding * monthlyRate;
+    entry.interest = interestForMonth;
+
+    let principalFromEmi = Math.max(0, entry.emi - interestForMonth); // entry.emi comes from original template
+    let prepay = monthPrepay;
+
+    const reduce = principalFromEmi + prepay;
+
+    if (outstanding <= reduce) {
+      // Cap the last month amounts
+      prepay = Math.max(0, outstanding - principalFromEmi);
+      entry.prepayment = prepay;
+      entry.principal  = Math.min(outstanding, principalFromEmi);
+      entry.emi        = entry.principal + interestForMonth; // last partial EMI
+      outstanding      = 0;
+    } else {
+      outstanding     -= reduce;
+      entry.principal  = principalFromEmi;
+      entry.prepayment = prepay;
+      // entry.emi stays as scheduled
+    }
+
+    entry.total       = entry.emi + entry.prepayment;
+    entry.totalPayment= entry.total;
+    entry.balance     = outstanding;
+  }
+
+  return { schedule: newSchedule, prepayments: prepaymentMap };
+}
+
     
     function updateSummaryWithSavings(newSchedule, monthlyPrepayments) {
         if (!newSchedule || newSchedule.length === 0 || !originalMetrics) return;
@@ -584,7 +665,10 @@ function renderAmortizationTable(schedule) {
   totalPrepayment += row.prepayment || 0;
   totalPayment    += row.total     || 0;
 
-  const totalDisplay     = row.emi > 0 ? formatToIndianCurrency(row.total)     : '<i>MORATORIUM</i>';
+const totalDisplay =
+  (row.emi > 0 || row.prepayment > 0)
+    ? formatToIndianCurrency(row.total)   // show EMI+prepay or just prepay
+    : '<i>MORATORIUM</i>';
   const principalDisplay = row.emi > 0 ? formatToIndianCurrency(row.principal) : '<i>-</i>';
 
   if (showingPrepayments) {
