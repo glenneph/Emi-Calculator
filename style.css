@@ -781,9 +781,13 @@ input[type=number] {
 }
 
 .prepayment-table-container .details-table th {
-    text-align: right;
+    text-align: left;
     width: 100%;
     table-layout: fixed;
+}
+
+.prepayment-table-container .details-table th:nth-child(3) {
+    text-align: right;
 }
 
 .prepayment-table-container .details-table td:nth-child(3) .input-field-wrapper{
