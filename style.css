@@ -320,6 +320,12 @@ input[type=number] {
     gap: 12px;
 }
 
+.chart-div {
+    flex-direction: column;        
+    align-items: flex-start;
+    gap: 6px;
+  }
+
 .summary-item .label {
     color: var(--text);
     font-size: 1rem;
@@ -383,7 +389,7 @@ input[type=number] {
   display: none; 
 }
 
-.tenure-savings-container.hidden {
+.tenure-savings-container.hidden, .header-prepayment-cta.hidden {
     display: none;
 }
 
@@ -972,6 +978,100 @@ input[type=number] {
 .summary-mobile { display: none; }
 .summary-desktop { display: table-row; }
 
+.header-prepayment-cta {
+    box-sizing: border-box;
+    content-visibility: auto;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 24px;
+    padding: 16px 24px;
+    position: relative;
+    width: calc(100% - 48px);
+    height: 100%;
+}
+
+.header-prepayment-cta-border {
+    position: absolute;
+    border: 1px solid #aed0b6;
+    inset: 0;
+    pointer-events: none;
+}
+
+.header-prepayment-cta-content {
+    flex-basis: 0;
+    content-visibility: auto;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    min-height: 1px;
+    min-width: 1px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.header-prepayment-cta-title {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: bold;
+    font-style: normal;
+    position: relative;
+    flex-shrink: 0;
+    font-size: 24px;
+    width: 100%;
+    color: var(--text);
+}
+
+.header-prepayment-cta-title p {
+    line-height: 1.4;
+}
+
+.header-prepayment-cta-description {
+    display: flex;
+    flex-direction: column;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    justify-content: flex-end;
+    position: relative;
+    flex-shrink: 0;
+    font-size: 16px;
+    width: 100%;
+    color: var(--text-muted);
+}
+
+.header-prepayment-cta-description p {
+    line-height: 1.4;
+}
+
+.chart-container {
+    width: 100%;
+    margin: 0 auto;
+    flex: 1;
+}
+
+.chart2-container {
+    max-height: 600px;
+    margin: 0 auto;
+    flex: 2;
+}
+
+.charts-div {
+    display: flex;
+    gap: 40px; /* Add some space between the charts */
+    align-items: flex-start; /* Align items to the start of the cross axis */
+}
+
+/* Restore .summary-item width */
+.summary-item {
+    display: flex;
+    width: 100%; 
+    flex-direction: column;
+    gap: 8px;
+}
+
 /* ▼▼▼ RESPONSIVE STYLES - CLEANLY MERGED ▼▼▼ */
 
 @media (max-width: 1118px) {
@@ -996,7 +1096,7 @@ input[type=number] {
     .summary-grid { 
         grid-template-columns: 1fr; 
     }
-    header {
+    .header {
         padding: 16px 24px; /* Adjust header padding on mobile */
     }
     
@@ -1225,6 +1325,7 @@ input[type=number] {
 }
 
 .btn-layered, .results-header .settings-btn {display: none;}
+.header-prepayment-cta { display: none; } /* Hidden on tablet and below */
 
 /* If the container clips the bleed, unclip on mobile */
 .amortization-table-container { overflow: visible; }
@@ -1343,4 +1444,3 @@ input[type=number] {
     padding: 20px;
 }
 }
-

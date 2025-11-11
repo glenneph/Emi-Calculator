@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silo Ai - Nav Bar</title>
+    <style>
+        /* Basic CSS Reset */
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Define CSS Variables for colors and fonts */
+        :root {
+            --color-primary-green: #2c6a3c;
+            --color-light-green: #ddeec6;
+            --color-dark-grey: #1b1d1a;
+            --color-text-grey: #75726d;
+            --color-white: #ffffff;
+            --color-off-white: #fff8f0;
+            --color-light-grey-bg: #dce6d8;
+            --color-border-grey: #e2e0dc;
+            --color-footer-border: #373b37;
+            --color-button-hover: #507b3e;
+
+            --font-poppins-regular: 'Poppins:Regular', sans-serif;
+            --font-poppins-semibold: 'Poppins:SemiBold', sans-serif;
+            --font-bricolage-medium: 'Bricolage Grotesque 48pt:Medium', sans-serif;
+            --font-bricolage-semibold: 'Bricolage Grotesque 72pt:SemiBold', sans-serif;
+        }
+
+        /* Global Styles */
+        .relative { position: relative; }
+        .size-full { width: 100%; height: 100%; }
+        .absolute { position: absolute; }
+        .content-stretch { display: flex; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-end { align-items: flex-end; }
+        .justify-start { justify-content: flex-start; }
+        .shrink-0 { flex-shrink: 0; }
+        .block { display: block; }
+        .max-w-none { max-width: none; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .not-italic { font-style: normal; }
+        .text-nowrap { white-space: nowrap; }
+        .whitespace-pre { white-space: pre; }
+        .flex-none { flex: none; }
+        .overflow-clip { overflow: clip; }
+        .inline-grid { display: inline-grid; }
+        .grid-cols-\[max-content\] { grid-template-columns: max-content; }
+        .grid-rows-\[max-content\] { grid-template-rows: max-content; }
+        .place-items-start { place-items: start; }
+        .\[grid-area\:1_\/_1\] { grid-area: 1 / 1; }
+        .box-border { box-sizing: border-box; }
+        .leading-\[0\] { line-height: 0; }
+
+
+        /* Main Header Specific Styles */
+        .backdrop-blur-\[15\.625px\] { backdrop-filter: blur(15.625px); }
+        .backdrop-filter { backdrop-filter: var(--tw-backdrop-filter); }
+        .bg-\[\#2c6a3c\] { background-color: var(--color-primary-green); }
+        .h-\[120px\] { height: 120px; }
+        .justify-between { justify-content: space-between; }
+        .px-\[75px\] { padding-left: 75px; padding-right: 75px; }
+        .py-\[15px\] { padding-top: 15px; padding-bottom: 15px; }
+        .border-\[\#e2e0dc\] { border-color: var(--color-border-grey); }
+        .border-\[0px_0px_1\.25px\] { border-width: 0px 0px 1.25px 0px; }
+        .border-solid { border-style: solid; }
+        .inset-0 { inset: 0; }
+        .pointer-events-none { pointer-events: none; }
+        .h-\[40px\] { height: 40px; }
+        .w-\[173\.627px\] { width: 173.627px; }
+        .gap-\[20px\] { gap: 20px; }
+        .font-\[\'Bricolage_Grotesque_48pt\:Medium\'_\,_sans-serif\] { font-family: var(--font-bricolage-medium); }
+        .text-\[22\.5px\] { font-size: 22.5px; }
+        .text-white { color: var(--color-white); }
+        .rounded-\[625px\] { border-radius: 625px; }
+        .px-\[20px\] { padding-left: 20px; padding-right: 20px; }
+        .py-\[10px\] { padding-top: 10px; padding-bottom: 10px; }
+        .size-\[20px\] { width: 20px; height: 20px; }
+        .bottom-\[37\.5\%\] { bottom: 37.5%; }
+        .left-1\/4 { left: 25%; }
+        .right-1\/4 { right: 25%; }
+        .top-\[37\.5\%\] { top: 37.5%; }
+        .h-\[15px\] { height: 15px; }
+        .rotate-\[270deg\] { transform: rotate(270deg); }
+        .w-\[7\.5px\] { width: 7.5px; }
+        .inset-\[-9\.38\%_-18\.75\%\] { inset: -9.38% -18.75%; }
+        .gap-\[15px\] { gap: 15px; }
+        .text-\[\#e1efce\] { color: #e1efce; }
+        .bg-\[\#ddeec6\] { background-color: var(--color-light-green); }
+        .size-\[60px\] { width: 60px; height: 60px; }
+        .p-\[10px\] { padding: 10px; }
+        .rounded-\[40px\] { border-radius: 40px; }
+        .ml-0 { margin-left: 0; }
+        .mt-0 { margin-top: 0; }
+        .size-\[25px\] { width: 25px; height: 25px; }
+        .bg-\[\#070707\] { background-color: #070707; }
+        .ml-\[6\.25px\] { margin-left: 6.25px; }
+        .mt-\[7\.5px\] { margin-top: 7.5px; }
+        .pb-\[15px\] { padding-bottom: 15px; }
+        .pt-\[10px\] { padding-top: 10px; padding-top: 10px; }
+        .px-\[30px\] { padding-left: 30px; padding-right: 30px; }
+        .rounded-\[10px\] { border-radius: 10px; }
+        .w-\[227\.5px\] { width: 227.5px; }
+        .mb-\[-5px\] { margin-bottom: -5px; }
+        .text-\[\#252422\] { color: #252422; }
+        .leading-\[33\.75px\] { line-height: 33.75px; }
+        .tracking-\[-0\.2px\] { letter-spacing: -0.2px; }
+
+    </style>
+    <script>
+        const imgFrame758533292 = "http://localhost:3845/assets/5476da46a5d1bdf9a132a9dff3d221d9ae4dd05b.svg";
+        const img = "http://localhost:3845/assets/e71a6c85983ab6024ff31e99e798453ad25280be.svg";
+        const imgGroup = "http://localhost:3845/assets/3bfaca85e62a439dded2e6e1e347a69b346d5385.svg";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('imgFrame758533292').src = imgFrame758533292;
+            document.getElementById('img').src = img;
+            document.getElementById('img-2').src = img; // Assuming img-2 uses the same svg as img
+            document.getElementById('imgGroup').src = imgGroup;
+        });
+    </script>
+</head>
+<body>
+    <div class="backdrop-blur-[15.625px] backdrop-filter bg-[#2c6a3c] box-border content-stretch flex h-[120px] items-center justify-between px-[75px] py-[15px] relative size-full" data-name="Headers" data-node-id="606:1705">
+      <div aria-hidden="true" class="absolute border-[#e2e0dc] border-[0px_0px_1.25px] border-solid inset-0 pointer-events-none" />
+      <div class="h-[40px] relative shrink-0 w-[173.627px]" data-node-id="606:1714">
+        <img alt="" class="block max-w-none size-full" src="" id="imgFrame758533292" />
+      </div>
+      <div class="content-stretch flex gap-[20px] items-center justify-start relative shrink-0" data-node-id="606:1722">
+        <div class="content-stretch flex gap-[20px] items-center justify-start relative shrink-0" data-node-id="606:1723">
+          <div class="box-border content-stretch flex gap-[10px] items-center justify-start px-[20px] py-[10px] relative rounded-[625px] shrink-0" data-name="Home" data-node-id="606:1724">
+            <div class="font-['Bricolage_Grotesque_48pt:Medium',_sans-serif] leading-[0] not-italic relative shrink-0 text-[22.5px] text-nowrap text-white" data-node-id="606:1725">
+              <p class="leading-[33.75px] whitespace-pre">Home</p>
+            </div>
+          </div>
+          <div class="box-border content-stretch flex gap-[10px] items-center justify-start px-[20px] py-[10px] relative rounded-[625px] shrink-0" data-name="Component 2" data-node-id="606:1737">
+            <div class="font-['Bricolage_Grotesque_48pt:Medium',_sans-serif] leading-[0] not-italic relative shrink-0 text-[22.5px] text-nowrap text-white" data-node-id="606:1738">
+              <p class="leading-[33.75px] whitespace-pre">ebooks™</p>
+            </div>
+            <div class="overflow-clip relative shrink-0 size-[20px]" data-name="nav-arrow-down" data-node-id="606:1750">
+              <div class="absolute bottom-[37.5%] flex items-center justify-center left-1/4 right-1/4 top-[37.5%]">
+                <div class="flex-none h-[15px] rotate-[270deg] w-[7.5px]">
+                  <div class="relative size-full" data-name="Vector" data-node-id="I606:1750;316:5632">
+                    <div class="absolute inset-[-9.38%_-18.75%]" style="--stroke-0: rgba(255, 255, 255, 1);">
+                      <img alt="" class="block max-w-none size-full" src="" id="img" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box-border content-stretch flex gap-[10px] items-center justify-start px-[20px] py-[10px] relative rounded-[625px] shrink-0" data-name="Home" data-node-id="606:1751">
+            <div class="font-['Bricolage_Grotesque_48pt:Medium',_sans-serif] leading-[0] not-italic relative shrink-0 text-[22.5px] text-nowrap text-white" data-node-id="606:1752">
+              <p class="leading-[33.75px] whitespace-pre">All Topics</p>
+            </div>
+          </div>
+          <div class="box-border content-stretch flex gap-[10px] items-center justify-start px-[20px] py-[10px] relative rounded-[625px] shrink-0" data-name="Home" data-node-id="606:1764">
+            <div class="font-['Bricolage_Grotesque_48pt:Medium',_sans-serif] leading-[0] not-italic relative shrink-0 text-[22.5px] text-nowrap text-white" data-node-id="606:1765">
+              <p class="leading-[33.75px] whitespace-pre">Membership</p>
+            </div>
+          </div>
+          <div class="font-['Bricolage_Grotesque_48pt:Medium',_sans-serif] leading-[0] not-italic relative shrink-0 text-[22.5px] text-nowrap text-white" data-node-id="606:1777">
+            <p class="leading-[33.75px] whitespace-pre">Contact Us</p>
+          </div>
+          <div class="box-border content-stretch flex gap-[10px] items-center justify-start px-[20px] py-[10px] relative rounded-[625px] shrink-0" data-name="Home" data-node-id="606:1789">
+            <div class="font-['Bricolage_Grotesque_48pt:Medium',_sans-serif] leading-[0] not-italic relative shrink-0 text-[22.5px] text-nowrap text-white" data-node-id="606:1790">
+              <p class="leading-[33.75px] whitespace-pre">About Us</p>
+            </div>
+            <div class="overflow-clip relative shrink-0 size-[20px]" data-name="nav-arrow-down" data-node-id="606:1802">
+              <div class="absolute bottom-[37.5%] flex items-center justify-center left-1/4 right-1/4 top-[37.5%]">
+                <div class="flex-none h-[15px] rotate-[270deg] w-[7.5px]">
+                  <div class="relative size-full" data-name="Vector" data-node-id="I606:1802;316:5632">
+                    <div class="absolute inset-[-9.38%_-18.75%]" style="--stroke-0: rgba(255, 255, 255, 1);">
+                      <img alt="" class="block max-w-none size-full" src="" id="img-2" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content-stretch flex gap-[15px] items-center justify-center relative shrink-0" data-node-id="606:1803">
+        <div class="box-border content-stretch flex gap-[15px] items-center justify-start px-[20px] py-[10px] relative rounded-[625px] shrink-0" data-name="Home" data-node-id="606:1804">
+          <div class="font-['Bricolage_Grotesque_48pt:Medium',_sans-serif] leading-[0] not-italic relative shrink-0 text-[#e1efce] text-[22.5px] text-nowrap" data-node-id="606:1805">
+            <p class="leading-[33.75px] whitespace-pre">Let’s Talk</p>
+          </div>
+          <div class="bg-[#ddeec6] box-border content-stretch flex flex-col gap-[12.5px] items-center justify-center overflow-clip p-[10px] relative rounded-[40px] shrink-0 size-[60px]" data-name="fi_483947" data-node-id="606:1817">
+            <div class="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0" data-name="Group" data-node-id="606:1818">
+              <div class="[grid-area:1_/_1] ml-0 mt-0 relative size-[25px]" data-name="Group" data-node-id="606:1819">
+                <img alt="" class="block max-w-none size-full" src="" id="imgGroup" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0" data-node-id="606:1821">
+          <div class="[grid-area:1_/_1] bg-[#070707] box-border content-stretch flex flex-col h-[60px] items-start justify-center ml-[6.25px] mt-[7.5px] pb-[15px] pt-[10px] px-[30px] relative rounded-[10px] w-[227.5px]" data-node-id="606:1822">
+            <div class="font-['Bricolage_Grotesque_48pt:Medium',_sans-serif] leading-[0] mb-[-5px] not-italic relative shrink-0 text-[#252422] text-[22.5px] text-nowrap" data-node-id="606:1823">
+              <p class="leading-[33.75px] whitespace-pre">Login / Register?</p>
+            </div>
+          </div>
+          <div class="[grid-area:1_/_1] bg-[#ddeec6] box-border content-stretch flex flex-col h-[60px] items-start justify-center ml-0 mt-0 pb-[15px] pt-[10px] px-[30px] relative rounded-[10px] w-[227.5px]" data-node-id="606:1824">
+            <div class="font-['Bricolage_Grotesque_48pt:Medium',_sans-serif] leading-[0] mb-[-5px] not-italic relative shrink-0 text-[#252422] text-[22.5px] text-nowrap" data-node-id="606:1825">
+              <p class="leading-[33.75px] whitespace-pre">Login / Register?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+</html>

@@ -6,6 +6,8 @@
     <link rel="icon" type="image/png" href="assets/emi.calc-favicon.png">
     <title>EMI Calculator - V2</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <!-- Using a different icon library for more options if needed -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -85,7 +87,7 @@
             </div>
 
             <!-- ===== RESULTS SECTION ===== -->
-            <div class="results-box">
+            <div class="results-box" style="margin-bottom: 30px;">
                 <div class="results-header">
                     <h2>Result</h2>
                     <button class="settings-btn">
@@ -170,16 +172,43 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="header-prepayment-cta hidden" data-name="Header" data-node-id="422:490">
+                    <div aria-hidden="true" class="header-prepayment-cta-border"></div>
+                    <div class="header-prepayment-cta-content" data-name="Text and Supporting text" data-node-id="422:496">
+                        <div class="header-prepayment-cta-title" data-node-id="422:494">
+                            <p>Looking to close your loan earlier?</p>
+                        </div>
+                        <div class="header-prepayment-cta-description" data-node-id="422:497">
+                            <p>Enter the amount you can pay extra apart from the actual EMI.</p>
+                        </div>
+                    </div>
+                    <div class="prepayment-btn-wrapper">
+                        <button id="prepayment-btn" class="btn-layered">Check Prepayments</button>
+                    </div>
+                </div>
             </div>
-             <!-- ===== ADD THIS NEW BLOCK FOR THE BUTTON ===== -->
-            <div id="prepayment-container" class="prepayment-cta-container">
-                <div class="prepayment-btn-wrapper">
-                    <button id="prepayment-btn" class="btn-layered">Check Prepayments</button>
+
+            <div class="results-box">
+                <div class="results-header">
+                    <h2>Charts</h2>
+                </div>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="charts-div">
+                            <span class="label-1 hidden">Enter Values to display Charts</span>
+                            <div class="chart-container">
+                                <canvas id="paymentBreakupChart" width="300" height="300"></canvas>  
+                            </div>
+                            <div class="chart2-container">
+                                <canvas id="amortizationChart" width="660px" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        </div>
     </main>
+    
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="script.js"></script>
 
