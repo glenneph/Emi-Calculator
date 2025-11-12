@@ -1050,12 +1050,26 @@ input[type=number] {
     width: 100%;
     margin: 0 auto;
     flex: 1;
+    max-width: 450px;
+    max-height: 450px;
+}
+
+.chart-container canvas {
+    max-width: 100%;
+    height: auto !important;
 }
 
 .chart2-container {
     max-height: 600px;
     margin: 0 auto;
     flex: 2;
+    max-width: 450px;
+    max-height: 370px;
+}
+
+.chart2-container canvas {
+    max-width: 100%;
+    height: auto !important;
 }
 
 .charts-div {
@@ -1078,6 +1092,32 @@ input[type=number] {
   .summary-grid {
     grid-template-columns: 1fr;
     gap: 16px 0;
+  }
+  
+  /* Stack charts vertically on tablet */
+  .charts-div {
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .chart-container {
+    width: 100%;
+    max-width: 450px;
+    max-height: 450px;
+    flex: none;
+  }
+  
+  .chart2-container {
+    width: 100%;
+    max-width: 100%;
+    max-height: 370px;
+    flex: none;
+  }
+  
+  .chart-container canvas,
+  .chart2-container canvas {
+    width: 100% !important;
+    height: auto !important;
   }
 }
 
@@ -1326,6 +1366,32 @@ input[type=number] {
 
 .btn-layered, .results-header .settings-btn {display: none;}
 .header-prepayment-cta { display: none; } /* Hidden on tablet and below */
+
+/* Ensure charts stack vertically on mobile */
+.charts-div {
+  flex-direction: column;
+  gap: 20px;
+}
+
+.chart-container {
+  width: 100%;
+  max-width: 450px;
+  max-height: 450px;
+  flex: none;
+}
+
+.chart2-container {
+  width: 100%;
+  max-width: 100%;
+  max-height: 370px;
+  flex: none;
+}
+
+.chart-container canvas,
+.chart2-container canvas {
+  width: 100% !important;
+  height: auto !important;
+}
 
 /* If the container clips the bleed, unclip on mobile */
 .amortization-table-container { overflow: visible; }
